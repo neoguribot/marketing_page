@@ -1,0 +1,343 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>소니코리아 검색광고 마케팅 대시보드</title>
+<script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+<style>
+  :root {
+    --surface: #fcfcfb; --page: #f9f9f7; --ink: #0b0b0b; --ink2: #52514e;
+    --grid: #e1e0d9; --border: rgba(11,11,11,0.10);
+    --blue: #2a78d6; --orange: #eb6834; --aqua: #1baf7a; --violet: #4a3aa7;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--page); color: var(--ink);
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 32px 20px 80px; }
+  h1 { font-size: 2rem; margin: 0 0 4px; }
+  h2 { font-size: 1.3rem; margin: 40px 0 14px; border-top: 1px solid var(--grid); padding-top: 28px; }
+  .meta { color: var(--ink2); font-size: 0.95em; margin-bottom: 24px; }
+  .banner {
+    background: #eef4fc; border: 1px solid #cfe0f5; border-radius: 8px;
+    padding: 12px 16px; font-size: 0.9em; color: var(--ink2); margin-bottom: 24px;
+  }
+  .kpi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px 24px; }
+  .kpi-grid .label { color: var(--ink2); font-size: 0.85em; }
+  .kpi-grid .value { font-size: 1.7rem; font-weight: 600; }
+  .card {
+    border: 1px solid var(--border); border-radius: 8px; padding: 16px 18px;
+    margin-bottom: 14px; background: var(--surface);
+  }
+  .badge {
+    display: inline-block; color: white; padding: 2px 8px; border-radius: 4px;
+    font-size: 0.78em; font-weight: 600; margin-right: 8px;
+  }
+  .card p { margin: 8px 0; }
+  .note-row { display: flex; gap: 24px; flex-wrap: wrap; font-size: 0.9em; color: var(--ink2); }
+  .chart-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .chart { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 8px; }
+  .controls { display: flex; gap: 20px; align-items: center; flex-wrap: wrap; margin-bottom: 16px; font-size: 0.92em; }
+  .controls label { color: var(--ink2); margin-right: 6px; }
+  button.preset {
+    border: 1px solid var(--border); background: var(--surface); border-radius: 999px;
+    padding: 6px 14px; cursor: pointer; font-size: 0.88em; color: var(--ink);
+  }
+  button.preset.active { background: var(--blue); color: white; border-color: var(--blue); }
+  input[type="date"], select {
+    border: 1px solid var(--border); border-radius: 6px; padding: 5px 8px; font-size: 0.9em;
+  }
+  .cmp-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 14px; margin: 18px 0; }
+  .cmp-grid .label { color: var(--ink2); font-size: 0.8em; }
+  .cmp-grid .value { font-size: 1.25rem; font-weight: 600; }
+  .cmp-grid .delta { font-size: 0.82em; font-weight: 600; }
+  .delta.up { color: #0ca30c; } .delta.down { color: #d03b3b; } .delta.flat { color: var(--ink2); }
+  table { width: 100%; border-collapse: collapse; font-size: 0.9em; }
+  th, td { text-align: right; padding: 7px 10px; border-bottom: 1px solid var(--grid); white-space: nowrap; }
+  th:first-child, td:first-child { text-align: left; }
+  th { color: var(--ink2); font-weight: 600; }
+  .table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 8px; }
+  details { margin-top: 14px; border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px; }
+  summary { cursor: pointer; font-weight: 600; }
+  footer { margin-top: 60px; color: var(--ink2); font-size: 0.85em; }
+  @media (max-width: 760px) {
+    .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+    .chart-grid { grid-template-columns: 1fr; }
+    .cmp-grid { grid-template-columns: repeat(3, 1fr); }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>소니코리아 검색광고 마케팅 대시보드</h1>
+  <div class="meta">데이터 기준: 2026-07-06 ~ 2026-08-04 · 네이버 검색광고 리포트 · 업체: 소니 · 업종: 쇼핑몰 · 리테일 · 목표: 판매 · 입찰 전략: 전환수 최대화</div>
+  <div class="banner">이 페이지는 정적 스냅샷입니다. 날짜 필터와 기간 비교는 이 페이지에 포함된 데이터(2026-07-06 ~ 2026-08-04) 범위 내에서 브라우저가 즉시 계산합니다. 원본 Streamlit 앱 소스코드는 이 저장소의 app.py를 참고하세요.</div>
+
+  <div class="kpi-grid">
+    <div><div class="label">노출수</div><div class="value">13,385</div></div>
+    <div><div class="label">클릭수</div><div class="value">1,015</div></div>
+    <div><div class="label">CTR</div><div class="value">7.58%</div></div>
+    <div><div class="label">총비용</div><div class="value">₩144만</div></div>
+    <div><div class="label">구매(전환)</div><div class="value">17건</div></div>
+    <div><div class="label">전환당비용(CPA)</div><div class="value">₩84,706</div></div>
+  </div>
+
+  <h2>계정 진단 이슈</h2>
+  
+        <div class="card">
+          <span class="badge" style="background:#d03b3b">높음</span>
+          <strong>예산이 수요를 못 따라갑니다</strong>
+          <p>노출될 수 있었는데 예산이 떨어져 못 나간 비중이 큽니다. 하루 중 이른 시간에 예산이 소진되면 오후·저녁의 좋은 트래픽을 통째로 놓칩니다.</p>
+          <div class="note-row">
+            <span class="note"><b>근거</b> 노출 손실(예산): 57.5% / 일일 예산: ₩40,000 / 예산 소진일: 30일 / 30일</span>
+            <span class="note"><b>조치</b> 일일 예산을 올리거나, 성과가 낮은 키워드를 빼서 남은 예산을 좋은 키워드에 몰아주세요.</span>
+          </div>
+        </div>
+        <div class="card">
+          <span class="badge" style="background:#fab219">보통</span>
+          <strong>광고 소재가 부족합니다</strong>
+          <p>반응형 검색광고는 제목·설명 조합을 실험해 성과를 올립니다. 자산이 적으면 실험할 조합 자체가 없습니다.</p>
+          <div class="note-row">
+            <span class="note"><b>근거</b> 광고그룹: 광고그룹 1 / 제목: 4개 (권장 8~15) / 설명: 2개 (권장 4) / CTR: 7.58%</span>
+            <span class="note"><b>조치</b> 제목을 최소 8개까지 채우고, 혜택·가격·신뢰·행동유도를 각각 다른 각도로 쓰세요.</span>
+          </div>
+        </div>
+        <div class="card">
+          <span class="badge" style="background:#fab219">보통</span>
+          <strong>키워드를 광고그룹 하나에 모두 넣었습니다</strong>
+          <p>광고문구는 하나인데 키워드 주제가 여러 개면, 어떤 키워드에도 딱 맞지 않는 광고가 됩니다. 품질평가점수가 떨어지고 클릭당비용이 올라갑니다.</p>
+          <div class="note-row">
+            <span class="note"><b>근거</b> 광고그룹: 1개 / 키워드: 16개 / 평균 품질평가점수: 5.6</span>
+            <span class="note"><b>조치</b> 주제가 비슷한 키워드끼리 3~5개씩 묶어 광고그룹을 나누고, 그룹마다 그 주제를 그대로 말하는 광고를 쓰세요.</span>
+          </div>
+        </div>
+        <div class="card">
+          <span class="badge" style="background:#ec835a">낮음</span>
+          <strong>광고 확장을 쓰지 않아 광고가 작게 보입니다</strong>
+          <p>사이트링크·콜아웃은 광고 면적을 넓혀 클릭률을 올립니다. 추가 비용 없이 얻는 CTR입니다.</p>
+          <div class="note-row">
+            <span class="note"><b>근거</b> 사이트링크: 0개 / 콜아웃: 0개 / CTR: 7.58%</span>
+            <span class="note"><b>조치</b> 사이트링크 4개, 콜아웃 4개를 추가하세요.</span>
+          </div>
+        </div>
+        <div class="card">
+          <span class="badge" style="background:#ec835a">낮음</span>
+          <strong>자동 입찰 학습 기간이 초반 성과를 눌렀습니다</strong>
+          <p>스마트 입찰은 데이터를 모으는 동안 일부러 다양한 입찰을 시도합니다. 이 기간의 성과는 정상보다 낮게 나오는 것이 정상입니다.</p>
+          <div class="note-row">
+            <span class="note"><b>근거</b> 학습 기간: 7일 / 학습 기간 비용: ₩336,000 / 입찰 전략: 전환수 최대화</span>
+            <span class="note"><b>조치</b> 학습 기간에는 설정을 바꾸지 말고 기다리세요. 중간에 바꾸면 학습이 처음부터 다시 시작됩니다.</span>
+          </div>
+        </div>
+
+  <h2>일별 성과 추이</h2>
+  <div class="controls">
+    <span>
+      <button class="preset active" data-preset="all">전체 기간</button>
+      <button class="preset" data-preset="7">최근 7일</button>
+      <button class="preset" data-preset="14">최근 14일</button>
+    </span>
+    <span><label>직접 선택</label><input type="date" id="trendStart" min="2026-07-06" max="2026-08-04" value="2026-07-06"> ~
+      <input type="date" id="trendEnd" min="2026-07-06" max="2026-08-04" value="2026-08-04"></span>
+  </div>
+  <div class="chart-grid">
+    <div class="chart" id="chart-impressions" style="height:320px"></div>
+    <div class="chart" id="chart-clicks" style="height:320px"></div>
+    <div class="chart" id="chart-cost" style="height:320px"></div>
+    <div class="chart" id="chart-purchases" style="height:320px"></div>
+  </div>
+
+  <h2>기간 비교 모니터링</h2>
+  <div class="controls">
+    <span><label>기간 A</label><input type="date" id="aStart" min="2026-07-06" max="2026-08-04"> ~ <input type="date" id="aEnd" min="2026-07-06" max="2026-08-04"></span>
+    <span><label>기간 B</label><input type="date" id="bStart" min="2026-07-06" max="2026-08-04"> ~ <input type="date" id="bEnd" min="2026-07-06" max="2026-08-04"></span>
+    <span><label>추이 비교 지표</label>
+      <select id="cmpMetric">
+        <option value="impressions">노출수</option>
+        <option value="clicks">클릭수</option>
+        <option value="cost">비용</option>
+        <option value="purchases">구매</option>
+        <option value="ctr">CTR</option>
+        <option value="cvr">전환율</option>
+      </select>
+    </span>
+  </div>
+  <div class="cmp-grid" id="cmpGrid"></div>
+  <div class="chart" id="chart-cmp" style="height:360px"></div>
+
+  <h2>기기 · 시간대별 성과</h2>
+  <div class="chart-grid">
+    <div class="chart" id="chart-device" style="height:320px"></div>
+    <div class="chart" id="chart-hourly" style="height:320px"></div>
+  </div>
+
+  <h2>키워드 성과</h2>
+  <div class="chart" id="chart-keywords" style="height:420px"></div>
+  <div class="table-wrap"><table><thead><tr><th>키워드</th><th>광고그룹</th><th>검색유형</th><th>품질평가점수</th><th>노출수</th><th>클릭수</th><th>CTR</th><th>평균 CPC</th><th>비용</th><th>구매</th><th>전환율</th></tr></thead><tbody><tr><td>헤드폰</td><td>광고그룹 1</td><td>일치검색</td><td>8</td><td>2530</td><td>449</td><td>17.76</td><td>1108</td><td>497557</td><td>11.0</td><td>2.45</td></tr><tr><td>카메라</td><td>광고그룹 1</td><td>구문검색</td><td>8</td><td>4000</td><td>227</td><td>5.67</td><td>1766</td><td>400756</td><td>1.0</td><td>0.44</td></tr><tr><td>카메라</td><td>광고그룹 1</td><td>일치검색</td><td>8</td><td>1682</td><td>156</td><td>9.29</td><td>1745</td><td>272642</td><td>5.0</td><td>3.21</td></tr><tr><td>오디오</td><td>광고그룹 1</td><td>구문검색</td><td>4</td><td>2330</td><td>44</td><td>1.88</td><td>1790</td><td>78330</td><td>0.0</td><td>0.0</td></tr><tr><td>플레이스테이션5</td><td>광고그룹 1</td><td>일치검색</td><td>4</td><td>987</td><td>38</td><td>3.87</td><td>1750</td><td>66769</td><td>0.0</td><td>0.0</td></tr><tr><td>오디오</td><td>광고그룹 1</td><td>일치검색</td><td>5</td><td>1064</td><td>35</td><td>3.3</td><td>1740</td><td>61168</td><td>0.0</td><td>0.0</td></tr><tr><td>카메라 렌즈</td><td>광고그룹 1</td><td>일치검색</td><td>6</td><td>497</td><td>36</td><td>7.23</td><td>1523</td><td>54717</td><td>0.0</td><td>0.0</td></tr><tr><td>소니 공식스토어</td><td>광고그룹 1</td><td>구문검색</td><td>7</td><td>73</td><td>10</td><td>13.92</td><td>213</td><td>2166</td><td>0.0</td><td>0.0</td></tr><tr><td>소니 교육할인</td><td>광고그룹 1</td><td>일치검색</td><td>6</td><td>33</td><td>5</td><td>14.8</td><td>344</td><td>1687</td><td>0.0</td><td>0.0</td></tr><tr><td>소니 쿠팡</td><td>광고그룹 1</td><td>구문검색</td><td>5</td><td>77</td><td>4</td><td>5.46</td><td>390</td><td>1640</td><td>0.0</td><td>0.0</td></tr><tr><td>소니 네이버스토어</td><td>광고그룹 1</td><td>일치검색</td><td>6</td><td>45</td><td>4</td><td>8.34</td><td>248</td><td>941</td><td>0.0</td><td>0.0</td></tr><tr><td>소니 프로모션</td><td>광고그룹 1</td><td>일치검색</td><td>6</td><td>35</td><td>2</td><td>6.79</td><td>246</td><td>579</td><td>0.0</td><td>0.0</td></tr><tr><td>소니 공식몰</td><td>광고그룹 1</td><td>일치검색</td><td>6</td><td>15</td><td>3</td><td>17.96</td><td>217</td><td>575</td><td>0.0</td><td>0.0</td></tr><tr><td>소니 학생 할인</td><td>광고그룹 1</td><td>구문검색</td><td>5</td><td>8</td><td>1</td><td>10.48</td><td>385</td><td>385</td><td>0.0</td><td>0.0</td></tr><tr><td>소니스토어 매장 찾기</td><td>광고그룹 1</td><td>일치검색</td><td>3</td><td>11</td><td>0</td><td>2.81</td><td>88</td><td>88</td><td>0.0</td><td>nan</td></tr><tr><td>소니스토어 매장 찾기</td><td>광고그룹 1</td><td>일치검색</td><td>3</td><td>0</td><td>0</td><td>0.0</td><td>0</td><td>0</td><td>0.0</td><td>nan</td></tr></tbody></table></div>
+
+  <details><summary>검색어 리포트 보기</summary><div class="table-wrap"><table><thead><tr><th>검색어</th><th>관련도</th><th>일치 키워드</th><th>광고그룹</th><th>검색유형</th><th>노출수</th><th>클릭수</th><th>CTR</th><th>비용</th><th>구매</th></tr></thead><tbody><tr><td>헤드폰</td><td>정확 일치</td><td>헤드폰</td><td>광고그룹 1</td><td>일치검색</td><td>2530</td><td>449</td><td>17.76</td><td>497557</td><td>11.0</td></tr><tr><td>카메라</td><td>정확 일치</td><td>카메라</td><td>광고그룹 1</td><td>구문검색</td><td>3074</td><td>235</td><td>7.65</td><td>412122</td><td>6.0</td></tr><tr><td>오디오</td><td>정확 일치</td><td>오디오</td><td>광고그룹 1</td><td>구문검색</td><td>2029</td><td>53</td><td>2.63</td><td>93620</td><td>0.0</td></tr><tr><td>저렴한 카메라</td><td>관련</td><td>카메라</td><td>광고그룹 1</td><td>구문검색</td><td>899</td><td>51</td><td>5.67</td><td>90042</td><td>0.0</td></tr><tr><td>카메라 문의</td><td>관련</td><td>카메라</td><td>광고그룹 1</td><td>구문검색</td><td>884</td><td>50</td><td>5.67</td><td>88558</td><td>0.0</td></tr><tr><td>카메라 요금</td><td>관련</td><td>카메라</td><td>광고그룹 1</td><td>구문검색</td><td>825</td><td>47</td><td>5.67</td><td>82675</td><td>0.0</td></tr><tr><td>플레이스테이션5</td><td>정확 일치</td><td>플레이스테이션5</td><td>광고그룹 1</td><td>일치검색</td><td>987</td><td>38</td><td>3.87</td><td>66769</td><td>0.0</td></tr><tr><td>카메라 렌즈</td><td>정확 일치</td><td>카메라 렌즈</td><td>광고그룹 1</td><td>일치검색</td><td>497</td><td>36</td><td>7.23</td><td>54717</td><td>0.0</td></tr><tr><td>오디오 문의</td><td>관련</td><td>오디오</td><td>광고그룹 1</td><td>구문검색</td><td>829</td><td>16</td><td>1.88</td><td>27869</td><td>0.0</td></tr><tr><td>직접 오디오</td><td>관련</td><td>오디오</td><td>광고그룹 1</td><td>구문검색</td><td>536</td><td>10</td><td>1.88</td><td>18009</td><td>0.0</td></tr><tr><td>소니 교육할인</td><td>정확 일치</td><td>소니 교육할인</td><td>광고그룹 1</td><td>일치검색</td><td>33</td><td>5</td><td>14.8</td><td>1687</td><td>0.0</td></tr><tr><td>소니 네이버스토어</td><td>정확 일치</td><td>소니 네이버스토어</td><td>광고그룹 1</td><td>일치검색</td><td>45</td><td>4</td><td>8.34</td><td>941</td><td>0.0</td></tr><tr><td>소니 공식스토어</td><td>정확 일치</td><td>소니 공식스토어</td><td>광고그룹 1</td><td>구문검색</td><td>29</td><td>4</td><td>13.92</td><td>867</td><td>0.0</td></tr><tr><td>소니 공식스토어 신청</td><td>관련</td><td>소니 공식스토어</td><td>광고그룹 1</td><td>구문검색</td><td>27</td><td>4</td><td>13.92</td><td>788</td><td>0.0</td></tr><tr><td>소니 프로모션</td><td>정확 일치</td><td>소니 프로모션</td><td>광고그룹 1</td><td>일치검색</td><td>35</td><td>2</td><td>6.79</td><td>579</td><td>0.0</td></tr><tr><td>소니 공식몰</td><td>정확 일치</td><td>소니 공식몰</td><td>광고그룹 1</td><td>일치검색</td><td>15</td><td>3</td><td>17.96</td><td>575</td><td>0.0</td></tr><tr><td>소니 공식스토어 할인</td><td>관련</td><td>소니 공식스토어</td><td>광고그룹 1</td><td>구문검색</td><td>17</td><td>2</td><td>13.92</td><td>511</td><td>0.0</td></tr><tr><td>소니 쿠팡</td><td>정확 일치</td><td>소니 쿠팡</td><td>광고그룹 1</td><td>구문검색</td><td>24</td><td>1</td><td>5.46</td><td>508</td><td>0.0</td></tr><tr><td>소니 쿠팡 할인</td><td>관련</td><td>소니 쿠팡</td><td>광고그룹 1</td><td>구문검색</td><td>21</td><td>1</td><td>5.46</td><td>439</td><td>0.0</td></tr><tr><td>가까운 소니 쿠팡</td><td>관련</td><td>소니 쿠팡</td><td>광고그룹 1</td><td>구문검색</td><td>20</td><td>1</td><td>5.46</td><td>417</td><td>0.0</td></tr><tr><td>소니 쿠팡 요금</td><td>관련</td><td>소니 쿠팡</td><td>광고그룹 1</td><td>구문검색</td><td>13</td><td>1</td><td>5.46</td><td>276</td><td>0.0</td></tr><tr><td>소니 학생 할인</td><td>정확 일치</td><td>소니 학생 할인</td><td>광고그룹 1</td><td>구문검색</td><td>2</td><td>0</td><td>10.48</td><td>117</td><td>0.0</td></tr><tr><td>소니 학생 할인 가격</td><td>관련</td><td>소니 학생 할인</td><td>광고그룹 1</td><td>구문검색</td><td>2</td><td>0</td><td>10.48</td><td>111</td><td>0.0</td></tr><tr><td>소니 학생 할인 비교</td><td>관련</td><td>소니 학생 할인</td><td>광고그룹 1</td><td>구문검색</td><td>2</td><td>0</td><td>10.48</td><td>91</td><td>0.0</td></tr><tr><td>소니스토어 매장 찾기</td><td>정확 일치</td><td>소니스토어 매장 찾기</td><td>광고그룹 1</td><td>일치검색</td><td>11</td><td>0</td><td>2.81</td><td>88</td><td>0.0</td></tr><tr><td>소니 학생 할인 신청</td><td>관련</td><td>소니 학생 할인</td><td>광고그룹 1</td><td>구문검색</td><td>1</td><td>0</td><td>10.48</td><td>66</td><td>0.0</td></tr></tbody></table></div></details>
+  <details><summary>광고그룹 요약 보기</summary><div class="table-wrap"><table><thead><tr><th>광고그룹</th><th>키워드 수</th><th>평균 품질평가점수</th><th>노출수</th><th>클릭수</th><th>CTR</th><th>평균 CPC</th><th>비용</th><th>구매</th></tr></thead><tbody><tr><td>광고그룹 1</td><td>16</td><td>5.6</td><td>13387</td><td>1015</td><td>7.58</td><td>1419</td><td>1440000</td><td>17.0</td></tr></tbody></table></div></details>
+
+  <footer>소니코리아 검색광고 마케팅 대시보드 &middot; 정적 스냅샷 (GitHub Pages)</footer>
+</div>
+
+<script>
+const DATA = {"daily": [{"date": "2026-07-06", "impressions": 313, "clicks": 26, "ctr": 8.21, "cost": 48000, "purchases": 1.0, "cvr": 3.89}, {"date": "2026-07-07", "impressions": 311, "clicks": 27, "ctr": 8.75, "cost": 48000, "purchases": 1.0, "cvr": 3.67}, {"date": "2026-07-08", "impressions": 320, "clicks": 24, "ctr": 7.59, "cost": 48000, "purchases": 0.0, "cvr": 0.0}, {"date": "2026-07-09", "impressions": 339, "clicks": 26, "ctr": 7.79, "cost": 48000, "purchases": 0.0, "cvr": 0.0}, {"date": "2026-07-10", "impressions": 438, "clicks": 29, "ctr": 6.55, "cost": 48000, "purchases": 0.0, "cvr": 0.0}, {"date": "2026-07-11", "impressions": 443, "clicks": 29, "ctr": 6.63, "cost": 48000, "purchases": 0.0, "cvr": 0.0}, {"date": "2026-07-12", "impressions": 443, "clicks": 31, "ctr": 6.98, "cost": 48000, "purchases": 0.0, "cvr": 0.0}, {"date": "2026-07-13", "impressions": 528, "clicks": 33, "ctr": 6.22, "cost": 48000, "purchases": 0.0, "cvr": 0.0}, {"date": "2026-07-14", "impressions": 460, "clicks": 33, "ctr": 7.12, "cost": 48000, "purchases": 2.0, "cvr": 6.11}, {"date": "2026-07-15", "impressions": 433, "clicks": 33, "ctr": 7.55, "cost": 48000, "purchases": 1.0, "cvr": 3.06}, {"date": "2026-07-16", "impressions": 427, "clicks": 35, "ctr": 8.1, "cost": 48000, "purchases": 0.0, "cvr": 0.0}, {"date": "2026-07-17", "impressions": 459, "clicks": 39, "ctr": 8.49, "cost": 48000, "purchases": 1.0, "cvr": 2.57}, {"date": "2026-07-18", "impressions": 507, "clicks": 36, "ctr": 7.03, "cost": 48000, "purchases": 1.0, "cvr": 2.81}, {"date": "2026-07-19", "impressions": 506, "clicks": 34, "ctr": 6.71, "cost": 48000, "purchases": 1.0, "cvr": 2.95}, {"date": "2026-07-20", "impressions": 441, "clicks": 38, "ctr": 8.54, "cost": 48000, "purchases": 3.0, "cvr": 7.96}, {"date": "2026-07-21", "impressions": 472, "clicks": 37, "ctr": 7.77, "cost": 48000, "purchases": 3.0, "cvr": 8.19}, {"date": "2026-07-22", "impressions": 452, "clicks": 40, "ctr": 8.93, "cost": 48000, "purchases": 0.0, "cvr": 0.0}, {"date": "2026-07-23", "impressions": 489, "clicks": 32, "ctr": 6.58, "cost": 48000, "purchases": 0.0, "cvr": 0.0}, {"date": "2026-07-24", "impressions": 424, "clicks": 37, "ctr": 8.84, "cost": 48000, "purchases": 0.0, "cvr": 0.0}, {"date": "2026-07-25", "impressions": 426, "clicks": 37, "ctr": 8.7, "cost": 48000, "purchases": 0.0, "cvr": 0.0}, {"date": "2026-07-26", "impressions": 480, "clicks": 35, "ctr": 7.23, "cost": 48000, "purchases": 0.0, "cvr": 0.0}, {"date": "2026-07-27", "impressions": 496, "clicks": 39, "ctr": 7.92, "cost": 48000, "purchases": 0.0, "cvr": 0.0}, {"date": "2026-07-28", "impressions": 475, "clicks": 34, "ctr": 7.25, "cost": 48000, "purchases": 0.0, "cvr": 0.0}, {"date": "2026-07-29", "impressions": 401, "clicks": 35, "ctr": 8.7, "cost": 48000, "purchases": 0.0, "cvr": 0.0}, {"date": "2026-07-30", "impressions": 464, "clicks": 40, "ctr": 8.55, "cost": 48000, "purchases": 0.0, "cvr": 0.0}, {"date": "2026-07-31", "impressions": 457, "clicks": 37, "ctr": 8.11, "cost": 48000, "purchases": 1.0, "cvr": 2.7}, {"date": "2026-08-01", "impressions": 501, "clicks": 35, "ctr": 7.06, "cost": 48000, "purchases": 1.0, "cvr": 2.82}, {"date": "2026-08-02", "impressions": 497, "clicks": 34, "ctr": 6.9, "cost": 48000, "purchases": 0.0, "cvr": 0.0}, {"date": "2026-08-03", "impressions": 521, "clicks": 34, "ctr": 6.46, "cost": 48000, "purchases": 1.0, "cvr": 2.97}, {"date": "2026-08-04", "impressions": 462, "clicks": 36, "ctr": 7.72, "cost": 48000, "purchases": 0.0, "cvr": 0.0}], "device": [{"name": "휴대전화", "impressions": 10169}, {"name": "컴퓨터", "impressions": 2481}, {"name": "태블릿", "impressions": 737}], "hourly": [{"hour": 0, "clicks": 10}, {"hour": 1, "clicks": 5}, {"hour": 2, "clicks": 3}, {"hour": 3, "clicks": 2}, {"hour": 4, "clicks": 2}, {"hour": 5, "clicks": 4}, {"hour": 6, "clicks": 13}, {"hour": 7, "clicks": 24}, {"hour": 8, "clicks": 35}, {"hour": 9, "clicks": 41}, {"hour": 10, "clicks": 42}, {"hour": 11, "clicks": 42}, {"hour": 12, "clicks": 44}, {"hour": 13, "clicks": 44}, {"hour": 14, "clicks": 46}, {"hour": 15, "clicks": 48}, {"hour": 16, "clicks": 50}, {"hour": 17, "clicks": 56}, {"hour": 18, "clicks": 89}, {"hour": 19, "clicks": 106}, {"hour": 20, "clicks": 114}, {"hour": 21, "clicks": 99}, {"hour": 22, "clicks": 64}, {"hour": 23, "clicks": 35}]};
+const KW_CHART = {"labels": ["헤드폰", "카메라", "카메라", "오디오", "플레이스테이션5", "오디오", "카메라 렌즈", "소니 공식스토어", "소니 교육할인", "소니 쿠팡", "소니 네이버스토어", "소니 프로모션", "소니 공식몰", "소니 학생 할인", "소니스토어 매장 찾기", "소니스토어 매장 찾기"], "values": [497557, 400756, 272642, 78330, 66769, 61168, 54717, 2166, 1687, 1640, 941, 579, 575, 385, 88, 0]};
+const COLORS = { blue: "#2a78d6", orange: "#eb6834", aqua: "#1baf7a", violet: "#4a3aa7" };
+const INK = "#0b0b0b", INK2 = "#52514e", GRID = "#e1e0d9", SURFACE = "#fcfcfb";
+
+function baseLayout(opts) {
+  opts = opts || {};
+  // 매 호출마다 새 객체를 만든다: Plotly가 렌더링 시 layout 객체(특히 xaxis/yaxis)를
+  // 직접 변형(type 추론 등)하므로, 객체를 공유하면 날짜 축 차트의 변형이 숫자 축
+  // 차트로 새어나가는 버그가 생긴다 (예: 시간대 0~23이 1970~2020 날짜로 표시됨).
+  return {
+    title: opts.title,
+    font: { family: "system-ui, -apple-system, 'Segoe UI', sans-serif", color: INK, size: 13 },
+    plot_bgcolor: SURFACE, paper_bgcolor: SURFACE,
+    margin: { l: 40, r: 10, t: 40, b: 30 },
+    xaxis: Object.assign({ gridcolor: GRID, zerolinecolor: GRID, tickfont: { color: INK2 } }, opts.xaxis || {}),
+    yaxis: Object.assign({ gridcolor: GRID, zerolinecolor: GRID, tickfont: { color: INK2 } }, opts.yaxis || {}),
+    legend: opts.legend,
+  };
+}
+const CONFIG = { displayModeBar: false, responsive: true };
+
+function toUTC(dstr) { const [y,m,d] = dstr.split("-").map(Number); return Date.UTC(y, m-1, d); }
+function fmtInt(n) { return Math.round(n).toLocaleString("ko-KR"); }
+function fmtWon(n) { return "₩" + fmtInt(n); }
+function fmtPct(n) { return n.toFixed(2) + "%"; }
+
+function filterRange(startStr, endStr) {
+  const s = toUTC(startStr), e = toUTC(endStr);
+  return DATA.daily.filter(r => { const t = toUTC(r.date); return t >= s && t <= e; });
+}
+
+function renderTrend(rows) {
+  const dates = rows.map(r => r.date);
+  Plotly.react("chart-impressions", [{x: dates, y: rows.map(r=>r.impressions), mode:"lines", line:{color:COLORS.blue,width:2}}],
+    baseLayout({title:"노출수 추이"}), CONFIG);
+  Plotly.react("chart-clicks", [{x: dates, y: rows.map(r=>r.clicks), mode:"lines", line:{color:COLORS.orange,width:2}}],
+    baseLayout({title:"클릭수 추이"}), CONFIG);
+  Plotly.react("chart-cost", [{x: dates, y: rows.map(r=>r.cost), type:"bar", marker:{color:COLORS.aqua}}],
+    baseLayout({title:"일별 비용"}), CONFIG);
+  Plotly.react("chart-purchases", [{x: dates, y: rows.map(r=>r.purchases), type:"bar", marker:{color:COLORS.violet}}],
+    baseLayout({title:"일별 구매(전환)"}), CONFIG);
+}
+
+const minDate = DATA.daily[0].date, maxDate = DATA.daily[DATA.daily.length-1].date;
+document.querySelectorAll("button.preset").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll("button.preset").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    const preset = btn.dataset.preset;
+    let start = minDate, end = maxDate;
+    if (preset !== "all") {
+      const days = parseInt(preset, 10);
+      const endTs = toUTC(maxDate);
+      start = new Date(endTs - (days-1)*86400000).toISOString().slice(0,10);
+    }
+    document.getElementById("trendStart").value = start;
+    document.getElementById("trendEnd").value = end;
+    renderTrend(filterRange(start, end));
+  });
+});
+["trendStart","trendEnd"].forEach(id => {
+  document.getElementById(id).addEventListener("change", () => {
+    document.querySelectorAll("button.preset").forEach(b => b.classList.remove("active"));
+    renderTrend(filterRange(document.getElementById("trendStart").value, document.getElementById("trendEnd").value));
+  });
+});
+renderTrend(DATA.daily);
+
+function summarize(rows) {
+  const imp = rows.reduce((s,r)=>s+r.impressions,0);
+  const clk = rows.reduce((s,r)=>s+r.clicks,0);
+  const cost = rows.reduce((s,r)=>s+r.cost,0);
+  const buy = rows.reduce((s,r)=>s+r.purchases,0);
+  return {
+    days: rows.length, impressions: imp, clicks: clk, cost: cost, purchases: buy,
+    ctr: imp ? clk/imp*100 : 0, cvr: clk ? buy/clk*100 : 0, cpa: buy ? cost/buy : 0,
+  };
+}
+function deltaPct(base, val) { return base ? (val-base)/base*100 : null; }
+
+const METRIC_DEFS = [
+  ["노출수","impressions", v=>fmtInt(v), "normal"],
+  ["클릭수","clicks", v=>fmtInt(v), "normal"],
+  ["CTR","ctr", v=>fmtPct(v), "normal"],
+  ["총비용","cost", v=>fmtWon(v), "inverse"],
+  ["구매","purchases", v=>fmtInt(v)+"건", "normal"],
+  ["전환율","cvr", v=>fmtPct(v), "normal"],
+  ["CPA","cpa", v=>fmtWon(v), "inverse"],
+];
+
+function renderComparison() {
+  const aStart = document.getElementById("aStart").value, aEnd = document.getElementById("aEnd").value;
+  const bStart = document.getElementById("bStart").value, bEnd = document.getElementById("bEnd").value;
+  if (!aStart || !aEnd || !bStart || !bEnd) return;
+  const rowsA = filterRange(aStart, aEnd), rowsB = filterRange(bStart, bEnd);
+  if (!rowsA.length || !rowsB.length) return;
+  const sa = summarize(rowsA), sb = summarize(rowsB);
+
+  const grid = document.getElementById("cmpGrid");
+  grid.innerHTML = "";
+  METRIC_DEFS.forEach(([label, key, fmt, dcolor]) => {
+    const d = deltaPct(sa[key], sb[key]);
+    let cls = "flat", arrow = "→";
+    if (d !== null && Math.abs(d) > 0.05) {
+      const isUp = d > 0;
+      arrow = isUp ? "↑" : "↓";
+      const good = dcolor === "inverse" ? !isUp : isUp;
+      cls = good ? "up" : "down";
+    }
+    const dtext = d === null ? "N/A" : `${arrow} ${d>=0?"+":""}${d.toFixed(1)}%`;
+    grid.innerHTML += `<div><div class="label">${label}</div><div class="value">${fmt(sb[key])}</div><div class="delta ${cls}">${dtext}</div></div>`;
+  });
+
+  const metric = document.getElementById("cmpMetric").value;
+  const aTs = toUTC(aStart), bTs = toUTC(bStart);
+  const xA = rowsA.map(r => Math.round((toUTC(r.date)-aTs)/86400000)+1);
+  const xB = rowsB.map(r => Math.round((toUTC(r.date)-bTs)/86400000)+1);
+  Plotly.react("chart-cmp", [
+    {x:xA, y:rowsA.map(r=>r[metric]), mode:"lines+markers", name:`기간 A (${aStart}~${aEnd})`, line:{color:COLORS.blue,width:2}, marker:{size:6}},
+    {x:xB, y:rowsB.map(r=>r[metric]), mode:"lines+markers", name:`기간 B (${bStart}~${bEnd})`, line:{color:COLORS.orange,width:2}, marker:{size:6}},
+  ], baseLayout({
+      title: document.getElementById("cmpMetric").selectedOptions[0].text + " 추이 비교 (경과일 기준)",
+      xaxis: {title:"경과일"},
+      legend: {orientation:"h", yanchor:"top", y:-0.2, xanchor:"center", x:0.5},
+    }), CONFIG);
+}
+
+(function initComparisonDefaults() {
+  const all = DATA.daily;
+  const mid = Math.floor(all.length/2);
+  document.getElementById("aStart").value = all[0].date;
+  document.getElementById("aEnd").value = all[mid-1].date;
+  document.getElementById("bStart").value = all[mid].date;
+  document.getElementById("bEnd").value = all[all.length-1].date;
+})();
+["aStart","aEnd","bStart","bEnd","cmpMetric"].forEach(id => document.getElementById(id).addEventListener("change", renderComparison));
+renderComparison();
+
+Plotly.newPlot("chart-device", [{
+  labels: DATA.device.map(d=>d.name), values: DATA.device.map(d=>d.impressions), type:"pie", hole:0.5,
+  marker: {colors:[COLORS.blue, COLORS.orange, COLORS.aqua]},
+}], {
+  title: "기기별 노출수 비중",
+  font: { family: "system-ui, -apple-system, 'Segoe UI', sans-serif", color: INK, size: 13 },
+  plot_bgcolor: SURFACE, paper_bgcolor: SURFACE, margin: {l:10,r:10,t:40,b:10},
+  legend: {orientation:"h", yanchor:"top", y:-0.05, xanchor:"center", x:0.5},
+}, CONFIG);
+
+Plotly.newPlot("chart-hourly", [{x: DATA.hourly.map(h=>h.hour), y: DATA.hourly.map(h=>h.clicks), type:"bar", marker:{color:COLORS.blue}}],
+  baseLayout({title:"시간대별 클릭수", xaxis:{title:"시"}}), CONFIG);
+
+Plotly.newPlot("chart-keywords", [{x: KW_CHART.values, y: KW_CHART.labels, type:"bar", orientation:"h", marker:{color:COLORS.blue}}],
+  baseLayout({title:"키워드별 비용", yaxis:{autorange:"reversed"}}), CONFIG);
+</script>
+</body>
+</html>
