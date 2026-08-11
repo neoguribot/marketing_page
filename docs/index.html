@@ -24,9 +24,23 @@
     background: #eef4fc; border: 1px solid #cfe0f5; border-radius: 8px;
     padding: 12px 16px; font-size: 0.9em; color: var(--ink2); margin-bottom: 24px;
   }
+  .kpi-card {
+    border: 1px solid var(--border); border-radius: 8px; padding: 20px 24px;
+    background: var(--surface); margin-bottom: 8px;
+  }
   .kpi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px 24px; }
   .kpi-grid .label { color: var(--ink2); font-size: 0.85em; }
   .kpi-grid .value { font-size: 1.7rem; font-weight: 600; }
+  .tabs { display: flex; gap: 4px; margin: 32px 0 0; border-bottom: 1px solid var(--grid); flex-wrap: wrap; }
+  .tab-btn {
+    padding: 10px 18px; border: none; background: none; cursor: pointer;
+    font-size: 1em; color: var(--ink2); border-bottom: 2px solid transparent;
+    margin-bottom: -1px; font-family: inherit;
+  }
+  .tab-btn.active { color: var(--ink); border-bottom-color: var(--blue); font-weight: 600; }
+  .tab-panel { display: none; padding-top: 8px; }
+  .tab-panel.active { display: block; }
+  .tab-panel h2:first-child { border-top: none; margin-top: 20px; }
   .card {
     border: 1px solid var(--border); border-radius: 8px; padding: 16px 18px;
     margin-bottom: 14px; background: var(--surface);
@@ -75,67 +89,84 @@
   <div class="meta">데이터 기준: 2026-07-06 ~ 2026-08-04 · 네이버 검색광고 리포트 · 업체: 소니 · 업종: 쇼핑몰 · 리테일 · 목표: 판매 · 입찰 전략: 전환수 최대화</div>
   <div class="banner">이 페이지는 정적 스냅샷입니다. 날짜 필터와 기간 비교는 이 페이지에 포함된 데이터(2026-07-06 ~ 2026-08-04) 범위 내에서 브라우저가 즉시 계산합니다. 원본 Streamlit 앱 소스코드는 이 저장소의 app.py를 참고하세요.</div>
 
-  <div class="kpi-grid">
-    <div><div class="label">노출수</div><div class="value">13,385</div></div>
-    <div><div class="label">클릭수</div><div class="value">1,015</div></div>
-    <div><div class="label">CTR</div><div class="value">7.58%</div></div>
-    <div><div class="label">총비용</div><div class="value">₩144만</div></div>
-    <div><div class="label">구매(전환)</div><div class="value">17건</div></div>
-    <div><div class="label">전환당비용(CPA)</div><div class="value">₩84,706</div></div>
+  <div class="kpi-card">
+    <div class="kpi-grid">
+      <div><div class="label">👁️ 노출수</div><div class="value">13,385</div></div>
+      <div><div class="label">🖱️ 클릭수</div><div class="value">1,015</div></div>
+      <div><div class="label">🎯 CTR</div><div class="value">7.58%</div></div>
+      <div><div class="label">💰 총비용</div><div class="value">₩144만</div></div>
+      <div><div class="label">🛒 구매(전환)</div><div class="value">17건</div></div>
+      <div><div class="label">📌 전환당비용(CPA)</div><div class="value">₩84,706</div></div>
+    </div>
   </div>
 
-  <h2>일별 성과 히트맵</h2>
-  <div class="meta" style="margin-bottom:14px">색은 지표별(열) 상대값입니다 — 진할수록 그 지표에서 상대적으로 높은 날입니다. 🌱 표시는 자동입찰 학습 기간(초반 7일)입니다. 정확한 값은 히트맵 아래 표를 참고하세요.</div>
-  <div class="chart" id="chart-heatmap" style="height:720px"></div>
-  <details><summary>일별 데이터 표로 보기</summary><div class="table-wrap"><table><thead><tr><th>날짜</th><th>요일</th><th>학습 기간</th><th>노출수</th><th>클릭수</th><th>CTR</th><th>비용</th><th>구매</th><th>전환율</th><th>전환당비용</th></tr></thead><tbody><tr><td>2026-07-06</td><td>월</td><td>🌱</td><td>313</td><td>26</td><td>8.21</td><td>48000</td><td>1.0</td><td>3.89</td><td>48000.0</td></tr><tr><td>2026-07-07</td><td>화</td><td>🌱</td><td>311</td><td>27</td><td>8.75</td><td>48000</td><td>1.0</td><td>3.67</td><td>48000.0</td></tr><tr><td>2026-07-08</td><td>수</td><td>🌱</td><td>320</td><td>24</td><td>7.59</td><td>48000</td><td>0.0</td><td>0.0</td><td>nan</td></tr><tr><td>2026-07-09</td><td>목</td><td>🌱</td><td>339</td><td>26</td><td>7.79</td><td>48000</td><td>0.0</td><td>0.0</td><td>nan</td></tr><tr><td>2026-07-10</td><td>금</td><td>🌱</td><td>438</td><td>29</td><td>6.55</td><td>48000</td><td>0.0</td><td>0.0</td><td>nan</td></tr><tr><td>2026-07-11</td><td>토</td><td>🌱</td><td>443</td><td>29</td><td>6.63</td><td>48000</td><td>0.0</td><td>0.0</td><td>nan</td></tr><tr><td>2026-07-12</td><td>일</td><td>🌱</td><td>443</td><td>31</td><td>6.98</td><td>48000</td><td>0.0</td><td>0.0</td><td>nan</td></tr><tr><td>2026-07-13</td><td>월</td><td></td><td>528</td><td>33</td><td>6.22</td><td>48000</td><td>0.0</td><td>0.0</td><td>nan</td></tr><tr><td>2026-07-14</td><td>화</td><td></td><td>460</td><td>33</td><td>7.12</td><td>48000</td><td>2.0</td><td>6.11</td><td>24000.0</td></tr><tr><td>2026-07-15</td><td>수</td><td></td><td>433</td><td>33</td><td>7.55</td><td>48000</td><td>1.0</td><td>3.06</td><td>48000.0</td></tr><tr><td>2026-07-16</td><td>목</td><td></td><td>427</td><td>35</td><td>8.1</td><td>48000</td><td>0.0</td><td>0.0</td><td>nan</td></tr><tr><td>2026-07-17</td><td>금</td><td></td><td>459</td><td>39</td><td>8.49</td><td>48000</td><td>1.0</td><td>2.57</td><td>48000.0</td></tr><tr><td>2026-07-18</td><td>토</td><td></td><td>507</td><td>36</td><td>7.03</td><td>48000</td><td>1.0</td><td>2.81</td><td>48000.0</td></tr><tr><td>2026-07-19</td><td>일</td><td></td><td>506</td><td>34</td><td>6.71</td><td>48000</td><td>1.0</td><td>2.95</td><td>48000.0</td></tr><tr><td>2026-07-20</td><td>월</td><td></td><td>441</td><td>38</td><td>8.54</td><td>48000</td><td>3.0</td><td>7.96</td><td>16000.0</td></tr><tr><td>2026-07-21</td><td>화</td><td></td><td>472</td><td>37</td><td>7.77</td><td>48000</td><td>3.0</td><td>8.19</td><td>16000.0</td></tr><tr><td>2026-07-22</td><td>수</td><td></td><td>452</td><td>40</td><td>8.93</td><td>48000</td><td>0.0</td><td>0.0</td><td>nan</td></tr><tr><td>2026-07-23</td><td>목</td><td></td><td>489</td><td>32</td><td>6.58</td><td>48000</td><td>0.0</td><td>0.0</td><td>nan</td></tr><tr><td>2026-07-24</td><td>금</td><td></td><td>424</td><td>37</td><td>8.84</td><td>48000</td><td>0.0</td><td>0.0</td><td>nan</td></tr><tr><td>2026-07-25</td><td>토</td><td></td><td>426</td><td>37</td><td>8.7</td><td>48000</td><td>0.0</td><td>0.0</td><td>nan</td></tr><tr><td>2026-07-26</td><td>일</td><td></td><td>480</td><td>35</td><td>7.23</td><td>48000</td><td>0.0</td><td>0.0</td><td>nan</td></tr><tr><td>2026-07-27</td><td>월</td><td></td><td>496</td><td>39</td><td>7.92</td><td>48000</td><td>0.0</td><td>0.0</td><td>nan</td></tr><tr><td>2026-07-28</td><td>화</td><td></td><td>475</td><td>34</td><td>7.25</td><td>48000</td><td>0.0</td><td>0.0</td><td>nan</td></tr><tr><td>2026-07-29</td><td>수</td><td></td><td>401</td><td>35</td><td>8.7</td><td>48000</td><td>0.0</td><td>0.0</td><td>nan</td></tr><tr><td>2026-07-30</td><td>목</td><td></td><td>464</td><td>40</td><td>8.55</td><td>48000</td><td>0.0</td><td>0.0</td><td>nan</td></tr><tr><td>2026-07-31</td><td>금</td><td></td><td>457</td><td>37</td><td>8.11</td><td>48000</td><td>1.0</td><td>2.7</td><td>48000.0</td></tr><tr><td>2026-08-01</td><td>토</td><td></td><td>501</td><td>35</td><td>7.06</td><td>48000</td><td>1.0</td><td>2.82</td><td>48000.0</td></tr><tr><td>2026-08-02</td><td>일</td><td></td><td>497</td><td>34</td><td>6.9</td><td>48000</td><td>0.0</td><td>0.0</td><td>nan</td></tr><tr><td>2026-08-03</td><td>월</td><td></td><td>521</td><td>34</td><td>6.46</td><td>48000</td><td>1.0</td><td>2.97</td><td>48000.0</td></tr><tr><td>2026-08-04</td><td>화</td><td></td><td>462</td><td>36</td><td>7.72</td><td>48000</td><td>0.0</td><td>0.0</td><td>nan</td></tr></tbody></table></div></details>
-
-  <h2>일별 성과 추이</h2>
-  <div class="controls">
-    <span>
-      <button class="preset active" data-preset="all">전체 기간</button>
-      <button class="preset" data-preset="7">최근 7일</button>
-      <button class="preset" data-preset="14">최근 14일</button>
-    </span>
-    <span><label>직접 선택</label><input type="date" id="trendStart" min="2026-07-06" max="2026-08-04" value="2026-07-06"> ~
-      <input type="date" id="trendEnd" min="2026-07-06" max="2026-08-04" value="2026-08-04"></span>
-  </div>
-  <div class="chart-grid">
-    <div class="chart" id="chart-impressions" style="height:320px"></div>
-    <div class="chart" id="chart-clicks" style="height:320px"></div>
-    <div class="chart" id="chart-cost" style="height:320px"></div>
-    <div class="chart" id="chart-purchases" style="height:320px"></div>
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="panel-heat">🗓️ 일별 히트맵</button>
+    <button class="tab-btn" data-tab="panel-trend">📈 추이 · 비교</button>
+    <button class="tab-btn" data-tab="panel-device">📱 기기 · 시간대</button>
+    <button class="tab-btn" data-tab="panel-kw">🔑 키워드</button>
   </div>
 
-  <h2>기간 비교 모니터링</h2>
-  <div class="controls">
-    <span><label>기간 A</label><input type="date" id="aStart" min="2026-07-06" max="2026-08-04"> ~ <input type="date" id="aEnd" min="2026-07-06" max="2026-08-04"></span>
-    <span><label>기간 B</label><input type="date" id="bStart" min="2026-07-06" max="2026-08-04"> ~ <input type="date" id="bEnd" min="2026-07-06" max="2026-08-04"></span>
-    <span><label>추이 비교 지표</label>
-      <select id="cmpMetric">
-        <option value="impressions">노출수</option>
-        <option value="clicks">클릭수</option>
-        <option value="cost">비용</option>
-        <option value="purchases">구매</option>
-        <option value="ctr">CTR</option>
-        <option value="cvr">전환율</option>
-      </select>
-    </span>
-  </div>
-  <div class="cmp-grid" id="cmpGrid"></div>
-  <div class="chart" id="chart-cmp" style="height:360px"></div>
-
-  <h2>기기 · 시간대별 성과</h2>
-  <div class="chart-grid">
-    <div class="chart" id="chart-device" style="height:320px"></div>
-    <div class="chart" id="chart-hourly" style="height:320px"></div>
+  <div class="tab-panel active" id="panel-heat">
+    <h2>일별 성과 히트맵</h2>
+    <div class="meta" style="margin-bottom:14px">색은 지표별(열) 상대값입니다 — 진할수록 그 지표에서 상대적으로 높은 날입니다. 🌱 표시는 자동입찰 학습 기간(초반 7일)입니다. 정확한 값은 히트맵 아래 표를 참고하세요.</div>
+    <div class="chart" id="chart-heatmap" style="height:720px"></div>
+    <details><summary>일별 데이터 표로 보기</summary><div class="table-wrap"><table><thead><tr><th>날짜</th><th>요일</th><th>학습 기간</th><th>노출수</th><th>클릭수</th><th>CTR</th><th>비용</th><th>구매</th><th>전환율</th><th>전환당비용</th></tr></thead><tbody><tr><td>2026-07-06</td><td>월</td><td>🌱</td><td>313</td><td>26</td><td>8.21</td><td>48000</td><td>1.0</td><td>3.89</td><td>48000.0</td></tr><tr><td>2026-07-07</td><td>화</td><td>🌱</td><td>311</td><td>27</td><td>8.75</td><td>48000</td><td>1.0</td><td>3.67</td><td>48000.0</td></tr><tr><td>2026-07-08</td><td>수</td><td>🌱</td><td>320</td><td>24</td><td>7.59</td><td>48000</td><td>0.0</td><td>0.0</td><td>nan</td></tr><tr><td>2026-07-09</td><td>목</td><td>🌱</td><td>339</td><td>26</td><td>7.79</td><td>48000</td><td>0.0</td><td>0.0</td><td>nan</td></tr><tr><td>2026-07-10</td><td>금</td><td>🌱</td><td>438</td><td>29</td><td>6.55</td><td>48000</td><td>0.0</td><td>0.0</td><td>nan</td></tr><tr><td>2026-07-11</td><td>토</td><td>🌱</td><td>443</td><td>29</td><td>6.63</td><td>48000</td><td>0.0</td><td>0.0</td><td>nan</td></tr><tr><td>2026-07-12</td><td>일</td><td>🌱</td><td>443</td><td>31</td><td>6.98</td><td>48000</td><td>0.0</td><td>0.0</td><td>nan</td></tr><tr><td>2026-07-13</td><td>월</td><td></td><td>528</td><td>33</td><td>6.22</td><td>48000</td><td>0.0</td><td>0.0</td><td>nan</td></tr><tr><td>2026-07-14</td><td>화</td><td></td><td>460</td><td>33</td><td>7.12</td><td>48000</td><td>2.0</td><td>6.11</td><td>24000.0</td></tr><tr><td>2026-07-15</td><td>수</td><td></td><td>433</td><td>33</td><td>7.55</td><td>48000</td><td>1.0</td><td>3.06</td><td>48000.0</td></tr><tr><td>2026-07-16</td><td>목</td><td></td><td>427</td><td>35</td><td>8.1</td><td>48000</td><td>0.0</td><td>0.0</td><td>nan</td></tr><tr><td>2026-07-17</td><td>금</td><td></td><td>459</td><td>39</td><td>8.49</td><td>48000</td><td>1.0</td><td>2.57</td><td>48000.0</td></tr><tr><td>2026-07-18</td><td>토</td><td></td><td>507</td><td>36</td><td>7.03</td><td>48000</td><td>1.0</td><td>2.81</td><td>48000.0</td></tr><tr><td>2026-07-19</td><td>일</td><td></td><td>506</td><td>34</td><td>6.71</td><td>48000</td><td>1.0</td><td>2.95</td><td>48000.0</td></tr><tr><td>2026-07-20</td><td>월</td><td></td><td>441</td><td>38</td><td>8.54</td><td>48000</td><td>3.0</td><td>7.96</td><td>16000.0</td></tr><tr><td>2026-07-21</td><td>화</td><td></td><td>472</td><td>37</td><td>7.77</td><td>48000</td><td>3.0</td><td>8.19</td><td>16000.0</td></tr><tr><td>2026-07-22</td><td>수</td><td></td><td>452</td><td>40</td><td>8.93</td><td>48000</td><td>0.0</td><td>0.0</td><td>nan</td></tr><tr><td>2026-07-23</td><td>목</td><td></td><td>489</td><td>32</td><td>6.58</td><td>48000</td><td>0.0</td><td>0.0</td><td>nan</td></tr><tr><td>2026-07-24</td><td>금</td><td></td><td>424</td><td>37</td><td>8.84</td><td>48000</td><td>0.0</td><td>0.0</td><td>nan</td></tr><tr><td>2026-07-25</td><td>토</td><td></td><td>426</td><td>37</td><td>8.7</td><td>48000</td><td>0.0</td><td>0.0</td><td>nan</td></tr><tr><td>2026-07-26</td><td>일</td><td></td><td>480</td><td>35</td><td>7.23</td><td>48000</td><td>0.0</td><td>0.0</td><td>nan</td></tr><tr><td>2026-07-27</td><td>월</td><td></td><td>496</td><td>39</td><td>7.92</td><td>48000</td><td>0.0</td><td>0.0</td><td>nan</td></tr><tr><td>2026-07-28</td><td>화</td><td></td><td>475</td><td>34</td><td>7.25</td><td>48000</td><td>0.0</td><td>0.0</td><td>nan</td></tr><tr><td>2026-07-29</td><td>수</td><td></td><td>401</td><td>35</td><td>8.7</td><td>48000</td><td>0.0</td><td>0.0</td><td>nan</td></tr><tr><td>2026-07-30</td><td>목</td><td></td><td>464</td><td>40</td><td>8.55</td><td>48000</td><td>0.0</td><td>0.0</td><td>nan</td></tr><tr><td>2026-07-31</td><td>금</td><td></td><td>457</td><td>37</td><td>8.11</td><td>48000</td><td>1.0</td><td>2.7</td><td>48000.0</td></tr><tr><td>2026-08-01</td><td>토</td><td></td><td>501</td><td>35</td><td>7.06</td><td>48000</td><td>1.0</td><td>2.82</td><td>48000.0</td></tr><tr><td>2026-08-02</td><td>일</td><td></td><td>497</td><td>34</td><td>6.9</td><td>48000</td><td>0.0</td><td>0.0</td><td>nan</td></tr><tr><td>2026-08-03</td><td>월</td><td></td><td>521</td><td>34</td><td>6.46</td><td>48000</td><td>1.0</td><td>2.97</td><td>48000.0</td></tr><tr><td>2026-08-04</td><td>화</td><td></td><td>462</td><td>36</td><td>7.72</td><td>48000</td><td>0.0</td><td>0.0</td><td>nan</td></tr></tbody></table></div></details>
   </div>
 
-  <h2>키워드 성과</h2>
-  <div class="chart" id="chart-keywords" style="height:420px"></div>
-  <div class="table-wrap"><table><thead><tr><th>키워드</th><th>광고그룹</th><th>검색유형</th><th>품질평가점수</th><th>노출수</th><th>클릭수</th><th>CTR</th><th>평균 CPC</th><th>비용</th><th>구매</th><th>전환율</th></tr></thead><tbody><tr><td>헤드폰</td><td>광고그룹 1</td><td>일치검색</td><td>8</td><td>2530</td><td>449</td><td>17.76</td><td>1108</td><td>497557</td><td>11.0</td><td>2.45</td></tr><tr><td>카메라</td><td>광고그룹 1</td><td>구문검색</td><td>8</td><td>4000</td><td>227</td><td>5.67</td><td>1766</td><td>400756</td><td>1.0</td><td>0.44</td></tr><tr><td>카메라</td><td>광고그룹 1</td><td>일치검색</td><td>8</td><td>1682</td><td>156</td><td>9.29</td><td>1745</td><td>272642</td><td>5.0</td><td>3.21</td></tr><tr><td>오디오</td><td>광고그룹 1</td><td>구문검색</td><td>4</td><td>2330</td><td>44</td><td>1.88</td><td>1790</td><td>78330</td><td>0.0</td><td>0.0</td></tr><tr><td>플레이스테이션5</td><td>광고그룹 1</td><td>일치검색</td><td>4</td><td>987</td><td>38</td><td>3.87</td><td>1750</td><td>66769</td><td>0.0</td><td>0.0</td></tr><tr><td>오디오</td><td>광고그룹 1</td><td>일치검색</td><td>5</td><td>1064</td><td>35</td><td>3.3</td><td>1740</td><td>61168</td><td>0.0</td><td>0.0</td></tr><tr><td>카메라 렌즈</td><td>광고그룹 1</td><td>일치검색</td><td>6</td><td>497</td><td>36</td><td>7.23</td><td>1523</td><td>54717</td><td>0.0</td><td>0.0</td></tr><tr><td>소니 공식스토어</td><td>광고그룹 1</td><td>구문검색</td><td>7</td><td>73</td><td>10</td><td>13.92</td><td>213</td><td>2166</td><td>0.0</td><td>0.0</td></tr><tr><td>소니 교육할인</td><td>광고그룹 1</td><td>일치검색</td><td>6</td><td>33</td><td>5</td><td>14.8</td><td>344</td><td>1687</td><td>0.0</td><td>0.0</td></tr><tr><td>소니 쿠팡</td><td>광고그룹 1</td><td>구문검색</td><td>5</td><td>77</td><td>4</td><td>5.46</td><td>390</td><td>1640</td><td>0.0</td><td>0.0</td></tr><tr><td>소니 네이버스토어</td><td>광고그룹 1</td><td>일치검색</td><td>6</td><td>45</td><td>4</td><td>8.34</td><td>248</td><td>941</td><td>0.0</td><td>0.0</td></tr><tr><td>소니 프로모션</td><td>광고그룹 1</td><td>일치검색</td><td>6</td><td>35</td><td>2</td><td>6.79</td><td>246</td><td>579</td><td>0.0</td><td>0.0</td></tr><tr><td>소니 공식몰</td><td>광고그룹 1</td><td>일치검색</td><td>6</td><td>15</td><td>3</td><td>17.96</td><td>217</td><td>575</td><td>0.0</td><td>0.0</td></tr><tr><td>소니 학생 할인</td><td>광고그룹 1</td><td>구문검색</td><td>5</td><td>8</td><td>1</td><td>10.48</td><td>385</td><td>385</td><td>0.0</td><td>0.0</td></tr><tr><td>소니스토어 매장 찾기</td><td>광고그룹 1</td><td>일치검색</td><td>3</td><td>11</td><td>0</td><td>2.81</td><td>88</td><td>88</td><td>0.0</td><td>nan</td></tr><tr><td>소니스토어 매장 찾기</td><td>광고그룹 1</td><td>일치검색</td><td>3</td><td>0</td><td>0</td><td>0.0</td><td>0</td><td>0</td><td>0.0</td><td>nan</td></tr></tbody></table></div>
+  <div class="tab-panel" id="panel-trend">
+    <h2>일별 성과 추이</h2>
+    <div class="controls">
+      <span>
+        <button class="preset active" data-preset="all">전체 기간</button>
+        <button class="preset" data-preset="7">최근 7일</button>
+        <button class="preset" data-preset="14">최근 14일</button>
+      </span>
+      <span><label>직접 선택</label><input type="date" id="trendStart" min="2026-07-06" max="2026-08-04" value="2026-07-06"> ~
+        <input type="date" id="trendEnd" min="2026-07-06" max="2026-08-04" value="2026-08-04"></span>
+    </div>
+    <div class="chart-grid">
+      <div class="chart" id="chart-impressions" style="height:320px"></div>
+      <div class="chart" id="chart-clicks" style="height:320px"></div>
+      <div class="chart" id="chart-cost" style="height:320px"></div>
+      <div class="chart" id="chart-purchases" style="height:320px"></div>
+    </div>
 
-  <details><summary>검색어 리포트 보기</summary><div class="table-wrap"><table><thead><tr><th>검색어</th><th>관련도</th><th>일치 키워드</th><th>광고그룹</th><th>검색유형</th><th>노출수</th><th>클릭수</th><th>CTR</th><th>비용</th><th>구매</th></tr></thead><tbody><tr><td>헤드폰</td><td>정확 일치</td><td>헤드폰</td><td>광고그룹 1</td><td>일치검색</td><td>2530</td><td>449</td><td>17.76</td><td>497557</td><td>11.0</td></tr><tr><td>카메라</td><td>정확 일치</td><td>카메라</td><td>광고그룹 1</td><td>구문검색</td><td>3074</td><td>235</td><td>7.65</td><td>412122</td><td>6.0</td></tr><tr><td>오디오</td><td>정확 일치</td><td>오디오</td><td>광고그룹 1</td><td>구문검색</td><td>2029</td><td>53</td><td>2.63</td><td>93620</td><td>0.0</td></tr><tr><td>저렴한 카메라</td><td>관련</td><td>카메라</td><td>광고그룹 1</td><td>구문검색</td><td>899</td><td>51</td><td>5.67</td><td>90042</td><td>0.0</td></tr><tr><td>카메라 문의</td><td>관련</td><td>카메라</td><td>광고그룹 1</td><td>구문검색</td><td>884</td><td>50</td><td>5.67</td><td>88558</td><td>0.0</td></tr><tr><td>카메라 요금</td><td>관련</td><td>카메라</td><td>광고그룹 1</td><td>구문검색</td><td>825</td><td>47</td><td>5.67</td><td>82675</td><td>0.0</td></tr><tr><td>플레이스테이션5</td><td>정확 일치</td><td>플레이스테이션5</td><td>광고그룹 1</td><td>일치검색</td><td>987</td><td>38</td><td>3.87</td><td>66769</td><td>0.0</td></tr><tr><td>카메라 렌즈</td><td>정확 일치</td><td>카메라 렌즈</td><td>광고그룹 1</td><td>일치검색</td><td>497</td><td>36</td><td>7.23</td><td>54717</td><td>0.0</td></tr><tr><td>오디오 문의</td><td>관련</td><td>오디오</td><td>광고그룹 1</td><td>구문검색</td><td>829</td><td>16</td><td>1.88</td><td>27869</td><td>0.0</td></tr><tr><td>직접 오디오</td><td>관련</td><td>오디오</td><td>광고그룹 1</td><td>구문검색</td><td>536</td><td>10</td><td>1.88</td><td>18009</td><td>0.0</td></tr><tr><td>소니 교육할인</td><td>정확 일치</td><td>소니 교육할인</td><td>광고그룹 1</td><td>일치검색</td><td>33</td><td>5</td><td>14.8</td><td>1687</td><td>0.0</td></tr><tr><td>소니 네이버스토어</td><td>정확 일치</td><td>소니 네이버스토어</td><td>광고그룹 1</td><td>일치검색</td><td>45</td><td>4</td><td>8.34</td><td>941</td><td>0.0</td></tr><tr><td>소니 공식스토어</td><td>정확 일치</td><td>소니 공식스토어</td><td>광고그룹 1</td><td>구문검색</td><td>29</td><td>4</td><td>13.92</td><td>867</td><td>0.0</td></tr><tr><td>소니 공식스토어 신청</td><td>관련</td><td>소니 공식스토어</td><td>광고그룹 1</td><td>구문검색</td><td>27</td><td>4</td><td>13.92</td><td>788</td><td>0.0</td></tr><tr><td>소니 프로모션</td><td>정확 일치</td><td>소니 프로모션</td><td>광고그룹 1</td><td>일치검색</td><td>35</td><td>2</td><td>6.79</td><td>579</td><td>0.0</td></tr><tr><td>소니 공식몰</td><td>정확 일치</td><td>소니 공식몰</td><td>광고그룹 1</td><td>일치검색</td><td>15</td><td>3</td><td>17.96</td><td>575</td><td>0.0</td></tr><tr><td>소니 공식스토어 할인</td><td>관련</td><td>소니 공식스토어</td><td>광고그룹 1</td><td>구문검색</td><td>17</td><td>2</td><td>13.92</td><td>511</td><td>0.0</td></tr><tr><td>소니 쿠팡</td><td>정확 일치</td><td>소니 쿠팡</td><td>광고그룹 1</td><td>구문검색</td><td>24</td><td>1</td><td>5.46</td><td>508</td><td>0.0</td></tr><tr><td>소니 쿠팡 할인</td><td>관련</td><td>소니 쿠팡</td><td>광고그룹 1</td><td>구문검색</td><td>21</td><td>1</td><td>5.46</td><td>439</td><td>0.0</td></tr><tr><td>가까운 소니 쿠팡</td><td>관련</td><td>소니 쿠팡</td><td>광고그룹 1</td><td>구문검색</td><td>20</td><td>1</td><td>5.46</td><td>417</td><td>0.0</td></tr><tr><td>소니 쿠팡 요금</td><td>관련</td><td>소니 쿠팡</td><td>광고그룹 1</td><td>구문검색</td><td>13</td><td>1</td><td>5.46</td><td>276</td><td>0.0</td></tr><tr><td>소니 학생 할인</td><td>정확 일치</td><td>소니 학생 할인</td><td>광고그룹 1</td><td>구문검색</td><td>2</td><td>0</td><td>10.48</td><td>117</td><td>0.0</td></tr><tr><td>소니 학생 할인 가격</td><td>관련</td><td>소니 학생 할인</td><td>광고그룹 1</td><td>구문검색</td><td>2</td><td>0</td><td>10.48</td><td>111</td><td>0.0</td></tr><tr><td>소니 학생 할인 비교</td><td>관련</td><td>소니 학생 할인</td><td>광고그룹 1</td><td>구문검색</td><td>2</td><td>0</td><td>10.48</td><td>91</td><td>0.0</td></tr><tr><td>소니스토어 매장 찾기</td><td>정확 일치</td><td>소니스토어 매장 찾기</td><td>광고그룹 1</td><td>일치검색</td><td>11</td><td>0</td><td>2.81</td><td>88</td><td>0.0</td></tr><tr><td>소니 학생 할인 신청</td><td>관련</td><td>소니 학생 할인</td><td>광고그룹 1</td><td>구문검색</td><td>1</td><td>0</td><td>10.48</td><td>66</td><td>0.0</td></tr></tbody></table></div></details>
-  <details><summary>광고그룹 요약 보기</summary><div class="table-wrap"><table><thead><tr><th>광고그룹</th><th>키워드 수</th><th>평균 품질평가점수</th><th>노출수</th><th>클릭수</th><th>CTR</th><th>평균 CPC</th><th>비용</th><th>구매</th></tr></thead><tbody><tr><td>광고그룹 1</td><td>16</td><td>5.6</td><td>13387</td><td>1015</td><td>7.58</td><td>1419</td><td>1440000</td><td>17.0</td></tr></tbody></table></div></details>
+    <h2>기간 비교 모니터링</h2>
+    <div class="controls">
+      <span><label>기간 A</label><input type="date" id="aStart" min="2026-07-06" max="2026-08-04"> ~ <input type="date" id="aEnd" min="2026-07-06" max="2026-08-04"></span>
+      <span><label>기간 B</label><input type="date" id="bStart" min="2026-07-06" max="2026-08-04"> ~ <input type="date" id="bEnd" min="2026-07-06" max="2026-08-04"></span>
+      <span><label>추이 비교 지표</label>
+        <select id="cmpMetric">
+          <option value="impressions">노출수</option>
+          <option value="clicks">클릭수</option>
+          <option value="cost">비용</option>
+          <option value="purchases">구매</option>
+          <option value="ctr">CTR</option>
+          <option value="cvr">전환율</option>
+        </select>
+      </span>
+    </div>
+    <div class="cmp-grid" id="cmpGrid"></div>
+    <div class="chart" id="chart-cmp" style="height:360px"></div>
+  </div>
+
+  <div class="tab-panel" id="panel-device">
+    <h2>기기 · 시간대별 성과</h2>
+    <div class="chart-grid">
+      <div class="chart" id="chart-device" style="height:320px"></div>
+      <div class="chart" id="chart-hourly" style="height:320px"></div>
+    </div>
+  </div>
+
+  <div class="tab-panel" id="panel-kw">
+    <h2>키워드 성과</h2>
+    <div class="chart" id="chart-keywords" style="height:420px"></div>
+    <div class="table-wrap"><table><thead><tr><th>키워드</th><th>광고그룹</th><th>검색유형</th><th>품질평가점수</th><th>노출수</th><th>클릭수</th><th>CTR</th><th>평균 CPC</th><th>비용</th><th>구매</th><th>전환율</th></tr></thead><tbody><tr><td>헤드폰</td><td>광고그룹 1</td><td>일치검색</td><td>8</td><td>2530</td><td>449</td><td>17.76</td><td>1108</td><td>497557</td><td>11.0</td><td>2.45</td></tr><tr><td>카메라</td><td>광고그룹 1</td><td>구문검색</td><td>8</td><td>4000</td><td>227</td><td>5.67</td><td>1766</td><td>400756</td><td>1.0</td><td>0.44</td></tr><tr><td>카메라</td><td>광고그룹 1</td><td>일치검색</td><td>8</td><td>1682</td><td>156</td><td>9.29</td><td>1745</td><td>272642</td><td>5.0</td><td>3.21</td></tr><tr><td>오디오</td><td>광고그룹 1</td><td>구문검색</td><td>4</td><td>2330</td><td>44</td><td>1.88</td><td>1790</td><td>78330</td><td>0.0</td><td>0.0</td></tr><tr><td>플레이스테이션5</td><td>광고그룹 1</td><td>일치검색</td><td>4</td><td>987</td><td>38</td><td>3.87</td><td>1750</td><td>66769</td><td>0.0</td><td>0.0</td></tr><tr><td>오디오</td><td>광고그룹 1</td><td>일치검색</td><td>5</td><td>1064</td><td>35</td><td>3.3</td><td>1740</td><td>61168</td><td>0.0</td><td>0.0</td></tr><tr><td>카메라 렌즈</td><td>광고그룹 1</td><td>일치검색</td><td>6</td><td>497</td><td>36</td><td>7.23</td><td>1523</td><td>54717</td><td>0.0</td><td>0.0</td></tr><tr><td>소니 공식스토어</td><td>광고그룹 1</td><td>구문검색</td><td>7</td><td>73</td><td>10</td><td>13.92</td><td>213</td><td>2166</td><td>0.0</td><td>0.0</td></tr><tr><td>소니 교육할인</td><td>광고그룹 1</td><td>일치검색</td><td>6</td><td>33</td><td>5</td><td>14.8</td><td>344</td><td>1687</td><td>0.0</td><td>0.0</td></tr><tr><td>소니 쿠팡</td><td>광고그룹 1</td><td>구문검색</td><td>5</td><td>77</td><td>4</td><td>5.46</td><td>390</td><td>1640</td><td>0.0</td><td>0.0</td></tr><tr><td>소니 네이버스토어</td><td>광고그룹 1</td><td>일치검색</td><td>6</td><td>45</td><td>4</td><td>8.34</td><td>248</td><td>941</td><td>0.0</td><td>0.0</td></tr><tr><td>소니 프로모션</td><td>광고그룹 1</td><td>일치검색</td><td>6</td><td>35</td><td>2</td><td>6.79</td><td>246</td><td>579</td><td>0.0</td><td>0.0</td></tr><tr><td>소니 공식몰</td><td>광고그룹 1</td><td>일치검색</td><td>6</td><td>15</td><td>3</td><td>17.96</td><td>217</td><td>575</td><td>0.0</td><td>0.0</td></tr><tr><td>소니 학생 할인</td><td>광고그룹 1</td><td>구문검색</td><td>5</td><td>8</td><td>1</td><td>10.48</td><td>385</td><td>385</td><td>0.0</td><td>0.0</td></tr><tr><td>소니스토어 매장 찾기</td><td>광고그룹 1</td><td>일치검색</td><td>3</td><td>11</td><td>0</td><td>2.81</td><td>88</td><td>88</td><td>0.0</td><td>nan</td></tr><tr><td>소니스토어 매장 찾기</td><td>광고그룹 1</td><td>일치검색</td><td>3</td><td>0</td><td>0</td><td>0.0</td><td>0</td><td>0</td><td>0.0</td><td>nan</td></tr></tbody></table></div>
+
+    <details><summary>검색어 리포트 보기</summary><div class="table-wrap"><table><thead><tr><th>검색어</th><th>관련도</th><th>일치 키워드</th><th>광고그룹</th><th>검색유형</th><th>노출수</th><th>클릭수</th><th>CTR</th><th>비용</th><th>구매</th></tr></thead><tbody><tr><td>헤드폰</td><td>정확 일치</td><td>헤드폰</td><td>광고그룹 1</td><td>일치검색</td><td>2530</td><td>449</td><td>17.76</td><td>497557</td><td>11.0</td></tr><tr><td>카메라</td><td>정확 일치</td><td>카메라</td><td>광고그룹 1</td><td>구문검색</td><td>3074</td><td>235</td><td>7.65</td><td>412122</td><td>6.0</td></tr><tr><td>오디오</td><td>정확 일치</td><td>오디오</td><td>광고그룹 1</td><td>구문검색</td><td>2029</td><td>53</td><td>2.63</td><td>93620</td><td>0.0</td></tr><tr><td>저렴한 카메라</td><td>관련</td><td>카메라</td><td>광고그룹 1</td><td>구문검색</td><td>899</td><td>51</td><td>5.67</td><td>90042</td><td>0.0</td></tr><tr><td>카메라 문의</td><td>관련</td><td>카메라</td><td>광고그룹 1</td><td>구문검색</td><td>884</td><td>50</td><td>5.67</td><td>88558</td><td>0.0</td></tr><tr><td>카메라 요금</td><td>관련</td><td>카메라</td><td>광고그룹 1</td><td>구문검색</td><td>825</td><td>47</td><td>5.67</td><td>82675</td><td>0.0</td></tr><tr><td>플레이스테이션5</td><td>정확 일치</td><td>플레이스테이션5</td><td>광고그룹 1</td><td>일치검색</td><td>987</td><td>38</td><td>3.87</td><td>66769</td><td>0.0</td></tr><tr><td>카메라 렌즈</td><td>정확 일치</td><td>카메라 렌즈</td><td>광고그룹 1</td><td>일치검색</td><td>497</td><td>36</td><td>7.23</td><td>54717</td><td>0.0</td></tr><tr><td>오디오 문의</td><td>관련</td><td>오디오</td><td>광고그룹 1</td><td>구문검색</td><td>829</td><td>16</td><td>1.88</td><td>27869</td><td>0.0</td></tr><tr><td>직접 오디오</td><td>관련</td><td>오디오</td><td>광고그룹 1</td><td>구문검색</td><td>536</td><td>10</td><td>1.88</td><td>18009</td><td>0.0</td></tr><tr><td>소니 교육할인</td><td>정확 일치</td><td>소니 교육할인</td><td>광고그룹 1</td><td>일치검색</td><td>33</td><td>5</td><td>14.8</td><td>1687</td><td>0.0</td></tr><tr><td>소니 네이버스토어</td><td>정확 일치</td><td>소니 네이버스토어</td><td>광고그룹 1</td><td>일치검색</td><td>45</td><td>4</td><td>8.34</td><td>941</td><td>0.0</td></tr><tr><td>소니 공식스토어</td><td>정확 일치</td><td>소니 공식스토어</td><td>광고그룹 1</td><td>구문검색</td><td>29</td><td>4</td><td>13.92</td><td>867</td><td>0.0</td></tr><tr><td>소니 공식스토어 신청</td><td>관련</td><td>소니 공식스토어</td><td>광고그룹 1</td><td>구문검색</td><td>27</td><td>4</td><td>13.92</td><td>788</td><td>0.0</td></tr><tr><td>소니 프로모션</td><td>정확 일치</td><td>소니 프로모션</td><td>광고그룹 1</td><td>일치검색</td><td>35</td><td>2</td><td>6.79</td><td>579</td><td>0.0</td></tr><tr><td>소니 공식몰</td><td>정확 일치</td><td>소니 공식몰</td><td>광고그룹 1</td><td>일치검색</td><td>15</td><td>3</td><td>17.96</td><td>575</td><td>0.0</td></tr><tr><td>소니 공식스토어 할인</td><td>관련</td><td>소니 공식스토어</td><td>광고그룹 1</td><td>구문검색</td><td>17</td><td>2</td><td>13.92</td><td>511</td><td>0.0</td></tr><tr><td>소니 쿠팡</td><td>정확 일치</td><td>소니 쿠팡</td><td>광고그룹 1</td><td>구문검색</td><td>24</td><td>1</td><td>5.46</td><td>508</td><td>0.0</td></tr><tr><td>소니 쿠팡 할인</td><td>관련</td><td>소니 쿠팡</td><td>광고그룹 1</td><td>구문검색</td><td>21</td><td>1</td><td>5.46</td><td>439</td><td>0.0</td></tr><tr><td>가까운 소니 쿠팡</td><td>관련</td><td>소니 쿠팡</td><td>광고그룹 1</td><td>구문검색</td><td>20</td><td>1</td><td>5.46</td><td>417</td><td>0.0</td></tr><tr><td>소니 쿠팡 요금</td><td>관련</td><td>소니 쿠팡</td><td>광고그룹 1</td><td>구문검색</td><td>13</td><td>1</td><td>5.46</td><td>276</td><td>0.0</td></tr><tr><td>소니 학생 할인</td><td>정확 일치</td><td>소니 학생 할인</td><td>광고그룹 1</td><td>구문검색</td><td>2</td><td>0</td><td>10.48</td><td>117</td><td>0.0</td></tr><tr><td>소니 학생 할인 가격</td><td>관련</td><td>소니 학생 할인</td><td>광고그룹 1</td><td>구문검색</td><td>2</td><td>0</td><td>10.48</td><td>111</td><td>0.0</td></tr><tr><td>소니 학생 할인 비교</td><td>관련</td><td>소니 학생 할인</td><td>광고그룹 1</td><td>구문검색</td><td>2</td><td>0</td><td>10.48</td><td>91</td><td>0.0</td></tr><tr><td>소니스토어 매장 찾기</td><td>정확 일치</td><td>소니스토어 매장 찾기</td><td>광고그룹 1</td><td>일치검색</td><td>11</td><td>0</td><td>2.81</td><td>88</td><td>0.0</td></tr><tr><td>소니 학생 할인 신청</td><td>관련</td><td>소니 학생 할인</td><td>광고그룹 1</td><td>구문검색</td><td>1</td><td>0</td><td>10.48</td><td>66</td><td>0.0</td></tr></tbody></table></div></details>
+    <details><summary>광고그룹 요약 보기</summary><div class="table-wrap"><table><thead><tr><th>광고그룹</th><th>키워드 수</th><th>평균 품질평가점수</th><th>노출수</th><th>클릭수</th><th>CTR</th><th>평균 CPC</th><th>비용</th><th>구매</th></tr></thead><tbody><tr><td>광고그룹 1</td><td>16</td><td>5.6</td><td>13387</td><td>1015</td><td>7.58</td><td>1419</td><td>1440000</td><td>17.0</td></tr></tbody></table></div></details>
+  </div>
 
   <footer>소니코리아 검색광고 마케팅 대시보드 &middot; 정적 스냅샷 (GitHub Pages)</footer>
 </div>
@@ -164,6 +195,19 @@ function baseLayout(opts) {
   };
 }
 const CONFIG = { displayModeBar: false, responsive: true };
+
+document.querySelectorAll(".tab-btn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+    document.querySelectorAll(".tab-panel").forEach(p => p.classList.remove("active"));
+    btn.classList.add("active");
+    document.getElementById(btn.dataset.tab).classList.add("active");
+    // 숨겨진 탭에서 Plotly.newPlot을 호출하면 컨테이너 너비가 0이라 차트가
+    // 찌그러진 채로 굳는다. 탭이 보이게 된 직후 resize 이벤트를 한 번 더
+    // 발생시켜 responsive:true 옵션이 실제 크기로 다시 맞추게 한다.
+    window.dispatchEvent(new Event("resize"));
+  });
+});
 
 function toUTC(dstr) { const [y,m,d] = dstr.split("-").map(Number); return Date.UTC(y, m-1, d); }
 function fmtInt(n) { return Math.round(n).toLocaleString("ko-KR"); }

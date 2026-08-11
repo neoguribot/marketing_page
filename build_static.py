@@ -160,9 +160,23 @@ HTML_TEMPLATE = """<!doctype html>
     background: #eef4fc; border: 1px solid #cfe0f5; border-radius: 8px;
     padding: 12px 16px; font-size: 0.9em; color: var(--ink2); margin-bottom: 24px;
   }}
+  .kpi-card {{
+    border: 1px solid var(--border); border-radius: 8px; padding: 20px 24px;
+    background: var(--surface); margin-bottom: 8px;
+  }}
   .kpi-grid {{ display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px 24px; }}
   .kpi-grid .label {{ color: var(--ink2); font-size: 0.85em; }}
   .kpi-grid .value {{ font-size: 1.7rem; font-weight: 600; }}
+  .tabs {{ display: flex; gap: 4px; margin: 32px 0 0; border-bottom: 1px solid var(--grid); flex-wrap: wrap; }}
+  .tab-btn {{
+    padding: 10px 18px; border: none; background: none; cursor: pointer;
+    font-size: 1em; color: var(--ink2); border-bottom: 2px solid transparent;
+    margin-bottom: -1px; font-family: inherit;
+  }}
+  .tab-btn.active {{ color: var(--ink); border-bottom-color: var(--blue); font-weight: 600; }}
+  .tab-panel {{ display: none; padding-top: 8px; }}
+  .tab-panel.active {{ display: block; }}
+  .tab-panel h2:first-child {{ border-top: none; margin-top: 20px; }}
   .card {{
     border: 1px solid var(--border); border-radius: 8px; padding: 16px 18px;
     margin-bottom: 14px; background: var(--surface);
@@ -211,67 +225,84 @@ HTML_TEMPLATE = """<!doctype html>
   <div class="meta">데이터 기준: {meta_period} · 네이버 검색광고 리포트 · 업체: {meta_company} · 업종: {meta_industry} · 목표: {meta_goal} · 입찰 전략: {meta_bid}</div>
   <div class="banner">이 페이지는 정적 스냅샷입니다. 날짜 필터와 기간 비교는 이 페이지에 포함된 데이터({min_date} ~ {max_date}) 범위 내에서 브라우저가 즉시 계산합니다. 원본 Streamlit 앱 소스코드는 이 저장소의 app.py를 참고하세요.</div>
 
-  <div class="kpi-grid">
-    <div><div class="label">노출수</div><div class="value">{impressions}</div></div>
-    <div><div class="label">클릭수</div><div class="value">{clicks}</div></div>
-    <div><div class="label">CTR</div><div class="value">{ctr}</div></div>
-    <div><div class="label">총비용</div><div class="value">{cost}</div></div>
-    <div><div class="label">구매(전환)</div><div class="value">{purchases}</div></div>
-    <div><div class="label">전환당비용(CPA)</div><div class="value">{cpa}</div></div>
+  <div class="kpi-card">
+    <div class="kpi-grid">
+      <div><div class="label">👁️ 노출수</div><div class="value">{impressions}</div></div>
+      <div><div class="label">👆 클릭수</div><div class="value">{clicks}</div></div>
+      <div><div class="label">🎯 CTR</div><div class="value">{ctr}</div></div>
+      <div><div class="label">💰 총비용</div><div class="value">{cost}</div></div>
+      <div><div class="label">🛒 구매(전환)</div><div class="value">{purchases}</div></div>
+      <div><div class="label">📌 전환당비용(CPA)</div><div class="value">{cpa}</div></div>
+    </div>
   </div>
 
-  <h2>일별 성과 히트맵</h2>
-  <div class="meta" style="margin-bottom:14px">색은 지표별(열) 상대값입니다 — 진할수록 그 지표에서 상대적으로 높은 날입니다. 🌱 표시는 자동입찰 학습 기간(초반 7일)입니다. 정확한 값은 히트맵 아래 표를 참고하세요.</div>
-  <div class="chart" id="chart-heatmap" style="height:{heatmap_height}px"></div>
-  <details><summary>일별 데이터 표로 보기</summary><div class="table-wrap">{daily_table}</div></details>
-
-  <h2>일별 성과 추이</h2>
-  <div class="controls">
-    <span>
-      <button class="preset active" data-preset="all">전체 기간</button>
-      <button class="preset" data-preset="7">최근 7일</button>
-      <button class="preset" data-preset="14">최근 14일</button>
-    </span>
-    <span><label>직접 선택</label><input type="date" id="trendStart" min="{min_date}" max="{max_date}" value="{min_date}"> ~
-      <input type="date" id="trendEnd" min="{min_date}" max="{max_date}" value="{max_date}"></span>
-  </div>
-  <div class="chart-grid">
-    <div class="chart" id="chart-impressions" style="height:320px"></div>
-    <div class="chart" id="chart-clicks" style="height:320px"></div>
-    <div class="chart" id="chart-cost" style="height:320px"></div>
-    <div class="chart" id="chart-purchases" style="height:320px"></div>
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="panel-heat">🗓️ 일별 히트맵</button>
+    <button class="tab-btn" data-tab="panel-trend">📈 추이 · 비교</button>
+    <button class="tab-btn" data-tab="panel-device">📱 기기 · 시간대</button>
+    <button class="tab-btn" data-tab="panel-kw">🔑 키워드</button>
   </div>
 
-  <h2>기간 비교 모니터링</h2>
-  <div class="controls">
-    <span><label>기간 A</label><input type="date" id="aStart" min="{min_date}" max="{max_date}"> ~ <input type="date" id="aEnd" min="{min_date}" max="{max_date}"></span>
-    <span><label>기간 B</label><input type="date" id="bStart" min="{min_date}" max="{max_date}"> ~ <input type="date" id="bEnd" min="{min_date}" max="{max_date}"></span>
-    <span><label>추이 비교 지표</label>
-      <select id="cmpMetric">
-        <option value="impressions">노출수</option>
-        <option value="clicks">클릭수</option>
-        <option value="cost">비용</option>
-        <option value="purchases">구매</option>
-        <option value="ctr">CTR</option>
-        <option value="cvr">전환율</option>
-      </select>
-    </span>
-  </div>
-  <div class="cmp-grid" id="cmpGrid"></div>
-  <div class="chart" id="chart-cmp" style="height:360px"></div>
-
-  <h2>기기 · 시간대별 성과</h2>
-  <div class="chart-grid">
-    <div class="chart" id="chart-device" style="height:320px"></div>
-    <div class="chart" id="chart-hourly" style="height:320px"></div>
+  <div class="tab-panel active" id="panel-heat">
+    <h2>일별 성과 히트맵</h2>
+    <div class="meta" style="margin-bottom:14px">색은 지표별(열) 상대값입니다 — 진할수록 그 지표에서 상대적으로 높은 날입니다. 🌱 표시는 자동입찰 학습 기간(초반 7일)입니다. 정확한 값은 히트맵 아래 표를 참고하세요.</div>
+    <div class="chart" id="chart-heatmap" style="height:{heatmap_height}px"></div>
+    <details><summary>일별 데이터 표로 보기</summary><div class="table-wrap">{daily_table}</div></details>
   </div>
 
-  <h2>키워드 성과</h2>
-  <div class="chart" id="chart-keywords" style="height:420px"></div>
-  <div class="table-wrap">{kw_table}</div>
+  <div class="tab-panel" id="panel-trend">
+    <h2>일별 성과 추이</h2>
+    <div class="controls">
+      <span>
+        <button class="preset active" data-preset="all">전체 기간</button>
+        <button class="preset" data-preset="7">최근 7일</button>
+        <button class="preset" data-preset="14">최근 14일</button>
+      </span>
+      <span><label>직접 선택</label><input type="date" id="trendStart" min="{min_date}" max="{max_date}" value="{min_date}"> ~
+        <input type="date" id="trendEnd" min="{min_date}" max="{max_date}" value="{max_date}"></span>
+    </div>
+    <div class="chart-grid">
+      <div class="chart" id="chart-impressions" style="height:320px"></div>
+      <div class="chart" id="chart-clicks" style="height:320px"></div>
+      <div class="chart" id="chart-cost" style="height:320px"></div>
+      <div class="chart" id="chart-purchases" style="height:320px"></div>
+    </div>
 
-  <details><summary>검색어 리포트 보기</summary><div class="table-wrap">{st_table}</div></details>
-  <details><summary>광고그룹 요약 보기</summary><div class="table-wrap">{ag_table}</div></details>
+    <h2>기간 비교 모니터링</h2>
+    <div class="controls">
+      <span><label>기간 A</label><input type="date" id="aStart" min="{min_date}" max="{max_date}"> ~ <input type="date" id="aEnd" min="{min_date}" max="{max_date}"></span>
+      <span><label>기간 B</label><input type="date" id="bStart" min="{min_date}" max="{max_date}"> ~ <input type="date" id="bEnd" min="{min_date}" max="{max_date}"></span>
+      <span><label>추이 비교 지표</label>
+        <select id="cmpMetric">
+          <option value="impressions">노출수</option>
+          <option value="clicks">클릭수</option>
+          <option value="cost">비용</option>
+          <option value="purchases">구매</option>
+          <option value="ctr">CTR</option>
+          <option value="cvr">전환율</option>
+        </select>
+      </span>
+    </div>
+    <div class="cmp-grid" id="cmpGrid"></div>
+    <div class="chart" id="chart-cmp" style="height:360px"></div>
+  </div>
+
+  <div class="tab-panel" id="panel-device">
+    <h2>기기 · 시간대별 성과</h2>
+    <div class="chart-grid">
+      <div class="chart" id="chart-device" style="height:320px"></div>
+      <div class="chart" id="chart-hourly" style="height:320px"></div>
+    </div>
+  </div>
+
+  <div class="tab-panel" id="panel-kw">
+    <h2>키워드 성과</h2>
+    <div class="chart" id="chart-keywords" style="height:420px"></div>
+    <div class="table-wrap">{kw_table}</div>
+
+    <details><summary>검색어 리포트 보기</summary><div class="table-wrap">{st_table}</div></details>
+    <details><summary>광고그룹 요약 보기</summary><div class="table-wrap">{ag_table}</div></details>
+  </div>
 
   <footer>소니코리아 검색광고 마케팅 대시보드 &middot; 정적 스냅샷 (GitHub Pages)</footer>
 </div>
@@ -300,6 +331,19 @@ function baseLayout(opts) {{
   }};
 }}
 const CONFIG = {{ displayModeBar: false, responsive: true }};
+
+document.querySelectorAll(".tab-btn").forEach(btn => {{
+  btn.addEventListener("click", () => {{
+    document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+    document.querySelectorAll(".tab-panel").forEach(p => p.classList.remove("active"));
+    btn.classList.add("active");
+    document.getElementById(btn.dataset.tab).classList.add("active");
+    // 숨겨진 탭에서 Plotly.newPlot을 호출하면 컨테이너 너비가 0이라 차트가
+    // 찌그러진 채로 굳는다. 탭이 보이게 된 직후 resize 이벤트를 한 번 더
+    // 발생시켜 responsive:true 옵션이 실제 크기로 다시 맞추게 한다.
+    window.dispatchEvent(new Event("resize"));
+  }});
+}});
 
 function toUTC(dstr) {{ const [y,m,d] = dstr.split("-").map(Number); return Date.UTC(y, m-1, d); }}
 function fmtInt(n) {{ return Math.round(n).toLocaleString("ko-KR"); }}
