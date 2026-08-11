@@ -25,7 +25,9 @@ def load_campaign_daily() -> pd.DataFrame:
     df["CTR"] = _pct_to_float(df["CTR"])
     df["전환율"] = _pct_to_float(df["전환율"])
     for col in ["예산 소진", "학습 기간"]:
-        df[col] = df[col].map({"Y": True, "N": False})
+        # 빈 문자열(N에 해당)이 .map()을 거치면 NaN이 되는데, NaN은 파이썬에서
+        # truthy하므로 반드시 "Y"와의 동등 비교로 불리언화한다.
+        df[col] = df[col].eq("Y")
     return df.sort_values("날짜").reset_index(drop=True)
 
 

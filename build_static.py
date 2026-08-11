@@ -12,8 +12,9 @@ from data_loader import load_all
 OUT_DIR = Path(__file__).parent / "docs"
 
 BLUE, ORANGE, AQUA, VIOLET = "#2a78d6", "#eb6834", "#1baf7a", "#4a3aa7"
-STATUS = {"높음": "#d03b3b", "보통": "#fab219", "낮음": "#ec835a"}
 INK_SECONDARY = "#52514e"
+HEAT_COLORS = ["#cde2fb", "#b7d3f6", "#9ec5f4", "#86b6ef", "#6da7ec", "#5598e7",
+               "#3987e5", "#2a78d6", "#256abf", "#1c5cab", "#184f95", "#104281", "#0d366b"]
 
 
 def build_json_payload(data: dict) -> str:
@@ -21,12 +22,15 @@ def build_json_payload(data: dict) -> str:
     daily_records = [
         {
             "date": row["날짜"].strftime("%Y-%m-%d"),
+            "weekday": row["요일"],
+            "learning": bool(row["학습 기간"]),
             "impressions": int(row["노출수"]),
             "clicks": int(row["클릭수"]),
             "ctr": float(row["CTR"]),
             "cost": int(row["비용"]),
             "purchases": float(row["구매"]),
             "cvr": float(row["전환율"]),
+            "cpa": None if row["구매"] == 0 else round(row["비용"] / row["구매"]),
         }
         for _, row in daily.iterrows()
     ]
@@ -42,25 +46,6 @@ def build_json_payload(data: dict) -> str:
         {"daily": daily_records, "device": device_records, "hourly": hourly_records},
         ensure_ascii=False,
     )
-
-
-def render_issues(issues) -> str:
-    order = {"높음": 0, "보통": 1, "낮음": 2}
-    rows = issues.sort_values(by="심각도", key=lambda s: s.map(order))
-    html = []
-    for _, r in rows.iterrows():
-        color = STATUS.get(r["심각도"], INK_SECONDARY)
-        html.append(f"""
-        <div class="card">
-          <span class="badge" style="background:{color}">{r['심각도']}</span>
-          <strong>{r['문제']}</strong>
-          <p>{r['설명']}</p>
-          <div class="note-row">
-            <span class="note"><b>근거</b> {r['근거']}</span>
-            <span class="note"><b>조치</b> {r['조치']}</span>
-          </div>
-        </div>""")
-    return "".join(html)
 
 
 def render_table(df, columns) -> str:
@@ -79,7 +64,6 @@ def main():
     search_terms = data["search_terms"].sort_values("비용", ascending=False)
     ad_groups = data["ad_groups"]
     meta = data["account_meta"]
-    issues = data["issues"]
 
     impressions = int(daily["노출수"].sum())
     clicks = int(daily["클릭수"].sum())
@@ -101,6 +85,16 @@ def main():
         ["광고그룹", "키워드 수", "평균 품질평가점수", "노출수", "클릭수", "CTR", "평균 CPC", "비용", "구매"],
     )
 
+    daily_disp = daily.copy()
+    daily_disp["전환당비용"] = (daily_disp["비용"] / daily_disp["구매"].replace(0, float("nan"))).round(0)
+    daily_disp["학습 기간"] = daily_disp["학습 기간"].map({True: "🌱", False: ""})
+    daily_disp["날짜"] = daily_disp["날짜"].dt.strftime("%Y-%m-%d")
+    daily_table = render_table(
+        daily_disp,
+        ["날짜", "요일", "학습 기간", "노출수", "클릭수", "CTR", "비용", "구매", "전환율", "전환당비용"],
+    )
+    heatmap_height = max(360, len(daily) * 22 + 60)
+
     payload = build_json_payload(data)
     min_date = daily["날짜"].min().strftime("%Y-%m-%d")
     max_date = daily["날짜"].max().strftime("%Y-%m-%d")
@@ -118,7 +112,6 @@ def main():
         cost=f"₩{cost/10000:,.0f}만",
         purchases=f"{purchases:,.0f}건",
         cpa=f"₩{cpa:,.0f}",
-        issues_html=render_issues(issues),
         kw_chart_data=json.dumps(
             {"labels": keywords["키워드"].tolist(), "values": keywords["비용"].tolist()},
             ensure_ascii=False,
@@ -126,11 +119,14 @@ def main():
         kw_table=kw_table,
         st_table=st_table,
         ag_table=ag_table,
+        daily_table=daily_table,
+        heatmap_height=heatmap_height,
         payload=payload,
         min_date=min_date,
         max_date=max_date,
         BLUE=BLUE, ORANGE=ORANGE, AQUA=AQUA, VIOLET=VIOLET,
         INK_SECONDARY=INK_SECONDARY,
+        heat_colorscale=json.dumps(HEAT_COLORS, ensure_ascii=False),
     )
 
     OUT_DIR.mkdir(exist_ok=True)
@@ -224,8 +220,10 @@ HTML_TEMPLATE = """<!doctype html>
     <div><div class="label">전환당비용(CPA)</div><div class="value">{cpa}</div></div>
   </div>
 
-  <h2>계정 진단 이슈</h2>
-  {issues_html}
+  <h2>일별 성과 히트맵</h2>
+  <div class="meta" style="margin-bottom:14px">색은 지표별(열) 상대값입니다 — 진할수록 그 지표에서 상대적으로 높은 날입니다. 🌱 표시는 자동입찰 학습 기간(초반 7일)입니다. 정확한 값은 히트맵 아래 표를 참고하세요.</div>
+  <div class="chart" id="chart-heatmap" style="height:{heatmap_height}px"></div>
+  <details><summary>일별 데이터 표로 보기</summary><div class="table-wrap">{daily_table}</div></details>
 
   <h2>일별 성과 추이</h2>
   <div class="controls">
@@ -283,6 +281,8 @@ const DATA = {payload};
 const KW_CHART = {kw_chart_data};
 const COLORS = {{ blue: "{BLUE}", orange: "{ORANGE}", aqua: "{AQUA}", violet: "{VIOLET}" }};
 const INK = "#0b0b0b", INK2 = "{INK_SECONDARY}", GRID = "#e1e0d9", SURFACE = "#fcfcfb";
+const HEAT_SEQ = {heat_colorscale};
+const HEAT_COLORSCALE = HEAT_SEQ.map((c,i) => [i/(HEAT_SEQ.length-1), c]);
 
 function baseLayout(opts) {{
   opts = opts || {{}};
@@ -427,6 +427,41 @@ Plotly.newPlot("chart-device", [{{
   plot_bgcolor: SURFACE, paper_bgcolor: SURFACE, margin: {{l:10,r:10,t:40,b:10}},
   legend: {{orientation:"h", yanchor:"top", y:-0.05, xanchor:"center", x:0.5}},
 }}, CONFIG);
+
+const HEAT_METRICS = [
+  ["노출수","impressions", v => fmtInt(v)],
+  ["클릭수","clicks", v => fmtInt(v)],
+  ["CTR","ctr", v => fmtPct(v)],
+  ["비용","cost", v => fmtWon(v)],
+  ["구매","purchases", v => fmtInt(v)+"건"],
+  ["전환율","cvr", v => fmtPct(v)],
+  ["CPA","cpa", v => (v===null||v===undefined) ? "-" : fmtWon(v)],
+];
+function renderHeatmap() {{
+  const rows = DATA.daily;
+  const y = rows.map(r => (r.learning ? "🌱 " : "") + r.date.slice(5) + ` (${{r.weekday}})`);
+  const zByMetric = [], cdByMetric = [];
+  HEAT_METRICS.forEach(([label, key, fmt]) => {{
+    const vals = rows.map(r => r[key]);
+    const present = vals.filter(v => v !== null && v !== undefined);
+    const vmin = Math.min(...present), vmax = Math.max(...present);
+    zByMetric.push(vals.map(v => (v===null||v===undefined) ? null : (vmax===vmin ? 0.5 : (v-vmin)/(vmax-vmin))));
+    cdByMetric.push(vals.map(v => fmt(v)));
+  }});
+  const z = rows.map((_, ri) => HEAT_METRICS.map((_, ci) => zByMetric[ci][ri]));
+  const customdata = rows.map((_, ri) => HEAT_METRICS.map((_, ci) => cdByMetric[ci][ri]));
+  Plotly.newPlot("chart-heatmap", [{{
+    x: HEAT_METRICS.map(m => m[0]), y: y, z: z, customdata: customdata,
+    type: "heatmap", colorscale: HEAT_COLORSCALE, showscale: false, xgap: 2, ygap: 2,
+    hovertemplate: "%{{y}}<br>%{{x}}: %{{customdata}}<extra></extra>",
+  }}], {{
+    font: {{ family: "system-ui, -apple-system, 'Segoe UI', sans-serif", color: INK, size: 13 }},
+    plot_bgcolor: SURFACE, paper_bgcolor: SURFACE, margin: {{l:90,r:10,t:10,b:30}},
+    xaxis: {{ gridcolor: GRID, zerolinecolor: GRID, tickfont: {{color: INK2}} }},
+    yaxis: {{ gridcolor: GRID, zerolinecolor: GRID, tickfont: {{color: INK2}}, autorange: "reversed" }},
+  }}, CONFIG);
+}}
+renderHeatmap();
 
 Plotly.newPlot("chart-hourly", [{{x: DATA.hourly.map(h=>h.hour), y: DATA.hourly.map(h=>h.clicks), type:"bar", marker:{{color:COLORS.blue}}}}],
   baseLayout({{title:"시간대별 클릭수", xaxis:{{title:"시"}}}}), CONFIG);

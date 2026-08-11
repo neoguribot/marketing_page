@@ -13,7 +13,6 @@ BLUE, ORANGE, AQUA, YELLOW, MAGENTA, GREEN, VIOLET, RED = (
     "#2a78d6", "#eb6834", "#1baf7a", "#eda100",
     "#e87ba4", "#008300", "#4a3aa7", "#e34948",
 )
-STATUS = {"good": "#0ca30c", "warning": "#fab219", "serious": "#ec835a", "critical": "#d03b3b"}
 INK_SECONDARY = "#52514e"
 GRID = "#e1e0d9"
 
@@ -46,7 +45,6 @@ ad_groups = data["ad_groups"]
 device = data["device"]
 hourly = data["hourly"]
 meta = data["account_meta"]
-issues = data["issues"]
 
 # ---------------- 사이드바 ----------------
 with st.sidebar:
@@ -88,23 +86,62 @@ k6.metric("전환당비용(CPA)", f"₩{cpa:,.0f}")
 
 st.divider()
 
-# ---------------- 진단 이슈 ----------------
-st.subheader("계정 진단 이슈")
-sev_color = {"높음": STATUS["critical"], "보통": STATUS["warning"], "낮음": STATUS["serious"]}
-for _, row in issues.iterrows():
-    color = sev_color.get(row["심각도"], INK_SECONDARY)
-    with st.container(border=True):
-        st.markdown(
-            f"<span style='background:{color};color:white;padding:2px 8px;"
-            f"border-radius:4px;font-size:0.8em;font-weight:600'>{row['심각도']}</span>"
-            f"&nbsp;&nbsp;**{row['문제']}**",
-            unsafe_allow_html=True,
-        )
-        st.write(row["설명"])
-        cols = st.columns(2)
-        note_style = f"color:{INK_SECONDARY};font-size:0.92em;line-height:1.5"
-        cols[0].markdown(f"<span style='{note_style}'><b>근거</b> {row['근거']}</span>", unsafe_allow_html=True)
-        cols[1].markdown(f"<span style='{note_style}'><b>조치</b> {row['조치']}</span>", unsafe_allow_html=True)
+# ---------------- 일별 성과 히트맵 ----------------
+st.subheader("일별 성과 히트맵")
+st.markdown(
+    f"<span style='color:{INK_SECONDARY};font-size:0.9em'>"
+    f"색은 지표별(열) 상대값입니다 — 진할수록 그 지표에서 상대적으로 높은 날입니다. "
+    f"🌱 표시는 자동입찰 학습 기간(초반 7일)입니다. 정확한 값은 히트맵 아래 표를 참고하세요.</span>",
+    unsafe_allow_html=True,
+)
+
+BLUE_SEQ = ["#cde2fb", "#b7d3f6", "#9ec5f4", "#86b6ef", "#6da7ec", "#5598e7",
+            "#3987e5", "#2a78d6", "#256abf", "#1c5cab", "#184f95", "#104281", "#0d366b"]
+HEAT_COLORSCALE = [[i / (len(BLUE_SEQ) - 1), c] for i, c in enumerate(BLUE_SEQ)]
+HEAT_METRICS = [
+    ("노출수", "{:,.0f}"),
+    ("클릭수", "{:,.0f}"),
+    ("CTR", "{:.2f}%"),
+    ("비용", "₩{:,.0f}"),
+    ("구매", "{:,.0f}건"),
+    ("전환율", "{:.2f}%"),
+    ("전환당비용", "₩{:,.0f}"),
+]
+
+heat_df = daily.copy()
+heat_df["전환당비용"] = heat_df["비용"] / heat_df["구매"].replace(0, float("nan"))
+heat_df["날짜라벨"] = heat_df.apply(
+    lambda r: ("🌱 " if r["학습 기간"] else "") + f"{r['날짜'].strftime('%m/%d')} ({r['요일']})", axis=1,
+)
+
+z_cols, text_cols = [], []
+for name, fmt in HEAT_METRICS:
+    col = heat_df[name]
+    vmin, vmax = col.min(skipna=True), col.max(skipna=True)
+    if pd.isna(vmin) or vmax == vmin:
+        norm = col.apply(lambda v: 0.5 if pd.notna(v) else None)
+    else:
+        norm = ((col - vmin) / (vmax - vmin)).where(col.notna(), None)
+    z_cols.append(norm.tolist())
+    text_cols.append(col.apply(lambda v: fmt.format(v) if pd.notna(v) else "-").tolist())
+
+heat_fig = go.Figure(go.Heatmap(
+    x=[m for m, _ in HEAT_METRICS],
+    y=heat_df["날짜라벨"],
+    z=list(map(list, zip(*z_cols))),
+    customdata=list(map(list, zip(*text_cols))),
+    colorscale=HEAT_COLORSCALE,
+    hovertemplate="%{y}<br>%{x}: %{customdata}<extra></extra>",
+    xgap=2, ygap=2,
+    showscale=False,
+))
+heat_layout = {**PLOT_LAYOUT, "yaxis": {**PLOT_LAYOUT["yaxis"], "autorange": "reversed"}}
+heat_fig.update_layout(height=max(360, len(heat_df) * 22 + 60), **heat_layout)
+st.plotly_chart(heat_fig, use_container_width=True)
+
+with st.expander("일별 데이터 표로 보기"):
+    show_df = heat_df[["날짜", "요일", "학습 기간", "노출수", "클릭수", "CTR", "비용", "구매", "전환율", "전환당비용"]]
+    st.dataframe(show_df, use_container_width=True, hide_index=True)
 
 st.divider()
 
